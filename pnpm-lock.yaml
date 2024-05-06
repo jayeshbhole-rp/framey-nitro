@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@types/uuid':
+    specifier: ^9.0.8
+    version: 9.0.8
   frames.js:
     specifier: ^0.15.1
     version: 0.15.1(@cloudflare/workers-types@4.20240502.0)(@types/express@4.17.21)(@xmtp/frames-validator@0.5.2)(@xmtp/proto@3.45.0)(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)(typescript@5.4.5)
@@ -17,6 +20,12 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.3.1(react@18.3.1)
+  uuid:
+    specifier: ^9.0.1
+    version: 9.0.1
+  viem:
+    specifier: ^2.9.32
+    version: 2.9.32(typescript@5.4.5)
 
 devDependencies:
   '@types/node':
@@ -500,6 +509,10 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/node': 20.12.8
       '@types/send': 0.17.4
+    dev: false
+
+  /@types/uuid@9.0.8:
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
     dev: false
 
   /@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.4.5):
@@ -3318,6 +3331,11 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /viem@2.9.32(typescript@5.4.5):
     resolution: {integrity: sha512-V2K1kkR+L/JZ1be/3NTsqLhN7BsMXXTTFOH3/LyEALbL8gln7QCHvmI942VbY9l5eYYH1EQ90vwKh24TqDd9gw==}
