@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { NATIVE } from '@/constants';
 import { getQuoteById } from '@/utils/pathfinder';
-import { redirect } from 'frames.js/core';
 import { Button } from 'frames.js/next';
 import { parseUnits, zeroAddress } from 'viem';
 
@@ -32,8 +30,6 @@ const handleRequest = frames(async (ctx) => {
     senderAddress: currentState.params.senderAddress,
     key: currentState.sessionKey,
   });
-
-  console.log(quote);
 
   currentState.status = quote?.status || QUOTE_STATUS.NONE;
 
