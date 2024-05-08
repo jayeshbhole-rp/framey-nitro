@@ -20,18 +20,20 @@ export type State = {
   };
 };
 
+export const initialState: State = {
+  sessionKey: '',
+  status: QUOTE_STATUS.NONE,
+  params: {
+    amount: '',
+    fromTokenAddress: '',
+    fromTokenChainId: '',
+    toTokenAddress: '',
+    toTokenChainId: '',
+    senderAddress: '',
+  },
+};
+
 export const frames = createFrames<State>({
   basePath: '/frames',
-  initialState: {
-    sessionKey: '',
-    status: QUOTE_STATUS.NONE,
-    params: {
-      amount: '',
-      fromTokenAddress: '',
-      fromTokenChainId: '',
-      toTokenAddress: '',
-      toTokenChainId: '',
-      senderAddress: '',
-    },
-  },
+  initialState,
 });
