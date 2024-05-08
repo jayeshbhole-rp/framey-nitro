@@ -1,3 +1,4 @@
+import { PF_SERVER } from '@/constants';
 import { QUOTE_STATUS } from '../app/frames/frames';
 
 export const PATH_FINDER_API_URL = 'https://api-beta.pathfinder.routerprotocol.com/api';
@@ -183,7 +184,7 @@ export const getQuoteById = async (params: {
   });
   console.log(body);
 
-  const res = await fetch('http://localhost:3200/quote', {
+  const res = await fetch(`${PF_SERVER}/quote`, {
     headers: {
       'Content-Type': 'application/json',
     },
