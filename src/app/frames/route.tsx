@@ -1,21 +1,23 @@
 /* eslint-disable react/jsx-key */
 import { Button } from 'frames.js/next';
-import { frames, QUOTE_STATUS } from './frames';
+import { frames, initialState, QUOTE_STATUS } from './frames';
 import { NATIVE } from '../../constants';
 import { v4 as uuidv4 } from 'uuid';
+import { PATH_FINDER_API_URL } from '@/utils/pathfinder';
 
 const handleRequest = frames(async (ctx) => {
-  const currentState = ctx.state;
+  const currentState = initialState;
 
   const sessionKey = uuidv4();
 
-  // const updatedState = {
-  //   ...currentState,
-  //   sessionKey,
-  //   status: QUOTE_STATUS.NONE,
-  // };
-
-  // console.log(updatedState);
+  fetch(PATH_FINDER_API_URL, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).catch((err) => {
+    console.error(err);
+  });
 
   return {
     image: (
@@ -50,7 +52,7 @@ const handleRequest = frames(async (ctx) => {
         Counter
       </Button>,
     ],
-    // state: updatedState,
+    state: currentState,
   };
 });
 
