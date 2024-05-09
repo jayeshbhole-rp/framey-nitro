@@ -1,6 +1,6 @@
 import { PF_SERVER } from '@/constants';
 import { QUOTE_STATUS } from '../app/frames/frames';
-import { TransactionResponse } from '@/types';
+import { QuoteResponse, TransactionResponse } from '@/types';
 
 export const PATH_FINDER_API_URL = 'https://api-beta.pathfinder.routerprotocol.com/api';
 
@@ -31,31 +31,23 @@ export const getPfQuote = async (params: {
   }
 };
 
-export type QuoteResponse = {
+export type RequestResponse = {
   status: QUOTE_STATUS;
-  data?: TransactionResponse;
+  quote?: QuoteResponse;
 };
 
-export const getQuoteById = async (params: {
+export const getRequestById = async (params: {
   args?: {
     fromTokenAddress: string;
     toTokenAddress: string;
     amount: string;
     fromTokenChainId: string;
     toTokenChainId: string;
-    senderAddress: string;
-    receiverAddress: string;
   };
   key: string;
 }) => {
-  const options: any = {
-    key: params.key,
-  };
-  if (params.args) {
-    options.args = { ...params.args, partnerId: '0' };
-  }
   const body = JSON.stringify({
-    params: options.args,
+    params: { ...params.args, partnerId: '0', key: params.key },
     key: params.key,
   });
 
@@ -68,5 +60,24 @@ export const getQuoteById = async (params: {
   }).then(async (res) => {
     return await res.json();
   });
-  return res as QuoteResponse;
+  return res as RequestResponse;
+};
+
+export const getTransactionById = async (params: { key: string; sender: string; receiver?: string }) => {
+  const body = JSON.stringify({
+    key: params.key,
+    sender: params.sender,
+    receiver: params.receiver,
+  });
+
+  const res = await fetch(`${PF_SERVER}/transaction`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: body,
+  }).then(async (res) => {
+    return await res.json();
+  });
+  return res as TransactionResponse;
 };

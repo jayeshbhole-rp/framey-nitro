@@ -10,6 +10,8 @@ const handleRequest = frames(async (ctx) => {
 
   const sessionKey = uuidv4();
 
+  currentState.sessionKey = sessionKey;
+
   fetch(PATH_FINDER_API_URL, {
     method: 'GET',
     headers: {

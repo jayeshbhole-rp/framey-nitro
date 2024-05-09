@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { getQuoteById } from '@/utils/pathfinder';
+import { getPfQuote, getRequestById, getTransactionById } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
 import { erc20Abi, parseUnits, zeroAddress } from 'viem';
 import { readContract } from '@wagmi/core';
@@ -15,29 +15,17 @@ const handleRequest = frames(async (ctx) => {
   let requireAllowance = false;
   let allowanceTo = '';
 
-  const quote = await getQuoteById({
+  const txQuote = await getRequestById({
     key: currentState.sessionKey,
   });
 
-  if (!quote.data) {
-    console.log('[TX] No data in quote', quote);
+  if (!txQuote.quote) {
+    console.log('[TX] No data in quote', txQuote);
 
     return redirect('/frames');
   }
 
-  currentState.status = quote?.status || QUOTE_STATUS.PENDING;
-
-  const bridgeFeeUSD = quote.data.bridgeFee ? await getBridgeFeeInUSD(quote.data.bridgeFee) : 'error';
-
-  const txData = {
-    allowanceTo: quote.data.allowanceTo,
-    amount: quote.data.destination.tokenAmount,
-    bridgeFee: bridgeFeeUSD,
-    calldata: quote.data.txn.data,
-    estimatedTime: quote.data.estimatedTime,
-    to: quote.data.txn.to,
-    value: quote.data.txn.value,
-  };
+  const bridgeFeeUSD = txQuote.quote.bridgeFee ? await getBridgeFeeInUSD(txQuote.quote.bridgeFee) : 'error';
 
   if (currentState.status === QUOTE_STATUS.SUCCESS) {
     // check allowance requirement
@@ -46,11 +34,11 @@ const handleRequest = frames(async (ctx) => {
         abi: erc20Abi,
         address: currentState.params.fromTokenAddress as `0x${string}`,
         functionName: 'allowance',
-        args: [currentState.params.senderAddress, txData.allowanceTo] as [`0x${string}`, `0x${string}`],
+        args: [currentState.params.senderAddress, txQuote.quote.allowanceTo] as [`0x${string}`, `0x${string}`],
         chainId: Number(currentState.params.fromTokenChainId) as ChainIds,
       });
 
-      allowanceTo = txData.allowanceTo;
+      allowanceTo = txQuote.quote.allowanceTo;
 
       if (allowance < BigInt(currentState.params.amount)) {
         requireAllowance = true;
@@ -103,9 +91,11 @@ const handleRequest = frames(async (ctx) => {
       ...buttons,
       <Button
         action='tx'
-        // target={'/tx/bridge'}
         target={{
           pathname: '/tx/bridge',
+          query: {
+            sessionKey: currentState.sessionKey,
+          },
         }}
       >
         Bridge
