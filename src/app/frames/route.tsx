@@ -36,7 +36,7 @@ const handleRequest = frames(async (ctx) => {
           pathname: '/lobby',
           query: {
             fromTokenAddress: NATIVE,
-            fromTokenChainId: '137',
+            fromTokenChainId: '10',
             toTokenAddress: '0x4ed4e862860bed51a9570b96d89af5e1b0efefed',
             toTokenChainId: '8453',
             sessionKey,
