@@ -4,6 +4,8 @@ import { getTransactionById } from '@/utils/pathfinder';
 import { TransactionTargetResponse } from 'frames.js';
 import { NextResponse } from 'next/server';
 import { frames } from '../../frames';
+import { DexSpanAbi } from '@/constants/abi/DexSpan';
+import { AssetForwarderAbi } from '@/constants/abi/AssetForwarder';
 
 export const POST = frames(async (ctx) => {
   if (!ctx.message || !ctx.message?.connectedAddress) {
@@ -26,7 +28,7 @@ export const POST = frames(async (ctx) => {
     chainId: `eip155:${quote.source.chainId}`,
     method: 'eth_sendTransaction',
     params: {
-      abi: [],
+      abi: quote.source.tokenPath ? DexSpanAbi : AssetForwarderAbi,
       to: quote.txn.to as `0x${string}`,
       value: quote.txn.value,
       data: quote.txn.data,
