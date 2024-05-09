@@ -2,7 +2,7 @@
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
 import { getBridgeFeeInUSD } from '@/utils';
-import { getRequestById } from '@/utils/pathfinder';
+import { getRequestById, RequestResponse } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
 import { parseUnits, zeroAddress } from 'viem';
 
@@ -10,12 +10,12 @@ const handleRequest = frames(async (ctx) => {
   let currentState = ctx.state;
   let readyForTx = false;
   let bridgeFeeUSD = '0';
-
-  if (!ctx.message || ctx.message?.inputText) {
-    throw new Error('No input text');
-  }
-
+  let request: RequestResponse;
   if (currentState.status === 'NONE') {
+    if (!ctx.message || ctx.message?.inputText) {
+      throw new Error('No input text');
+    }
+
     currentState.params = {
       amount: ctx.message?.inputText || '0',
       fromTokenAddress: ctx.searchParams.fromTokenAddress,
@@ -25,20 +25,26 @@ const handleRequest = frames(async (ctx) => {
       senderAddress: ctx.message?.connectedAddress || zeroAddress,
     };
     currentState.sessionKey = ctx.searchParams.sessionKey;
+
+    request = await getRequestById({
+      args: {
+        amount: parseUnits(currentState.params.amount, 18).toString(),
+        fromTokenAddress: currentState.params.fromTokenAddress,
+        fromTokenChainId: currentState.params.fromTokenChainId,
+        toTokenAddress: currentState.params.toTokenAddress,
+        toTokenChainId: currentState.params.toTokenChainId,
+      },
+      key: currentState.sessionKey,
+    });
+  } else {
+    request = await getRequestById({
+      key: currentState.sessionKey,
+    });
   }
 
-  const request = await getRequestById({
-    args: {
-      amount: parseUnits(currentState.params.amount, 18).toString(),
-      fromTokenAddress: currentState.params.fromTokenAddress,
-      fromTokenChainId: currentState.params.fromTokenChainId,
-      toTokenAddress: currentState.params.toTokenAddress,
-      toTokenChainId: currentState.params.toTokenChainId,
-    },
-    key: currentState.sessionKey,
-  });
-
   currentState.status = request?.status || QUOTE_STATUS.PENDING;
+
+  console.log('request', request);
 
   if (request.status === QUOTE_STATUS.SUCCESS && request.quote) {
     readyForTx = true;
