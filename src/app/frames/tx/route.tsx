@@ -39,8 +39,6 @@ const handleRequest = frames(async (ctx) => {
     value: quote.data.txn.value,
   };
 
-  console.log('[TX] txData', txData);
-
   if (currentState.status === QUOTE_STATUS.SUCCESS) {
     // check allowance requirement
     if (!isTokenETH(currentState.params.fromTokenAddress)) {
@@ -87,7 +85,7 @@ const handleRequest = frames(async (ctx) => {
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center justify-center'>
         <span>Bridge Quote</span>
         <span>Amount: {currentState.params.amount}</span>
-        <span>Quote Id: {currentState.sessionKey}</span>
+        {/* <span>Quote Id: {currentState.sessionKey}</span> */}
         <span>Quote Status: {currentState.status}</span>
 
         <span tw='mt-8'>

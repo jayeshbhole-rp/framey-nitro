@@ -21,9 +21,9 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: (
-      <div tw='bg-neutral-900 text-red-600 w-full h-full flex justify-center items-center flex-col'>
-        Start bridging to Base!
-        <span>Session: {sessionKey}</span>
+      <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center p-8'>
+        <span tw='text-[4rem]'>Start bridging to Base!</span>
+        <span>Bridge MATIC to DEGEN</span>
       </div>
     ),
     textInput: 'Enter the amount to bridge',
@@ -37,19 +37,11 @@ const handleRequest = frames(async (ctx) => {
             fromTokenChainId: '137',
             toTokenAddress: '0x4ed4e862860bed51a9570b96d89af5e1b0efefed',
             toTokenChainId: '8453',
-            receiverAddress: '0x0b90994F83D2Fde68f83C418141B42550dE2Cb4c',
-            senderAddress: '0x0b90994F83D2Fde68f83C418141B42550dE2Cb4c',
             sessionKey,
           },
         }}
       >
         Get Quote
-      </Button>,
-      <Button
-        action='post'
-        target={{ pathname: '/counter' }}
-      >
-        Counter
       </Button>,
     ],
     state: currentState,
