@@ -47,7 +47,7 @@ export const getRequestById = async (params: {
   key: string;
 }) => {
   const body = JSON.stringify({
-    params: { ...params.args, partnerId: '0', key: params.key },
+    params: { ...params.args, partnerId: '0' },
     key: params.key,
   });
 
