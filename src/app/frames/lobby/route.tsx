@@ -12,7 +12,7 @@ const handleRequest = frames(async (ctx) => {
   let bridgeFeeUSD = '0';
   let request: RequestResponse;
   if (currentState.status === 'NONE') {
-    if (!ctx.message || ctx.message?.inputText) {
+    if (!ctx.message || !ctx.message?.inputText) {
       throw new Error('No input text');
     }
 
