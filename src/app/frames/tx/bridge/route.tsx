@@ -32,6 +32,17 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     throw new Error('No quote');
   }
 
+  console.log({
+    chainId: `eip155:${quote.source.chainId}`,
+    method: 'eth_sendTransaction',
+    params: {
+      abi: quote.source.tokenPath ? DexSpanAbi : AssetForwarderAbi,
+      to: quote.txn.to,
+      value: quote.txn.value,
+      data: quote.txn.data,
+    },
+  });
+
   return NextResponse.json({
     chainId: `eip155:${quote.source.chainId}`,
     method: 'eth_sendTransaction',
