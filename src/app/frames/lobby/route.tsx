@@ -11,8 +11,8 @@ const handleRequest = frames(async (ctx) => {
   let readyForTx = false;
   let bridgeFeeUSD = '0';
 
-  if (!ctx.message) {
-    throw new Error('No frame message');
+  if (!ctx.message || ctx.message?.inputText) {
+    throw new Error('No input text');
   }
 
   if (currentState.status === 'NONE') {
