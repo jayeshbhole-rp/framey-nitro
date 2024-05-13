@@ -16,7 +16,6 @@ export type State = {
     fromTokenChainId: string;
     toTokenAddress: string;
     toTokenChainId: string;
-    senderAddress: string;
   };
 };
 
@@ -29,7 +28,6 @@ export const initialState: State = {
     fromTokenChainId: '',
     toTokenAddress: '',
     toTokenChainId: '',
-    senderAddress: '',
   },
 };
 

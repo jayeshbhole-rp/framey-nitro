@@ -1,19 +1,16 @@
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { getPfQuote, getRequestById, getTransactionById } from '@/utils/pathfinder';
-import { Button } from 'frames.js/next';
-import { erc20Abi, parseUnits, zeroAddress } from 'viem';
-import { readContract } from '@wagmi/core';
 import { ChainIds, wagmiConfig } from '@/constants/wagmiConfig';
 import { getBridgeFeeInUSD, isTokenETH, shortenAddress } from '@/utils';
+import { getRequestById } from '@/utils/pathfinder';
+import { readContract } from '@wagmi/core';
 import { redirect } from 'frames.js/core';
-import { FrameButtonElement } from 'frames.js/types';
+import { Button } from 'frames.js/next';
+import { erc20Abi } from 'viem';
 
 const handleRequest = frames(async (ctx) => {
   let currentState = ctx.state;
-  let requireAllowance = false;
-  let allowanceTo = '';
 
   const txQuote = await getRequestById({
     key: currentState.sessionKey,
@@ -26,47 +23,6 @@ const handleRequest = frames(async (ctx) => {
   }
 
   const bridgeFeeUSD = txQuote.quote.bridgeFee ? await getBridgeFeeInUSD(txQuote.quote.bridgeFee) : 'error';
-
-  if (currentState.status === QUOTE_STATUS.SUCCESS) {
-    // check allowance requirement
-    if (!isTokenETH(currentState.params.fromTokenAddress)) {
-      const allowance = await readContract(wagmiConfig, {
-        abi: erc20Abi,
-        address: currentState.params.fromTokenAddress as `0x${string}`,
-        functionName: 'allowance',
-        args: [currentState.params.senderAddress, txQuote.quote.allowanceTo] as [`0x${string}`, `0x${string}`],
-        chainId: Number(currentState.params.fromTokenChainId) as ChainIds,
-      });
-
-      allowanceTo = txQuote.quote.allowanceTo;
-
-      if (allowance < BigInt(currentState.params.amount)) {
-        requireAllowance = true;
-      }
-    }
-  }
-
-  let buttons: [] | [FrameButtonElement] = [];
-
-  if (requireAllowance) {
-    buttons = [
-      <Button
-        action='tx'
-        target={{
-          query: {
-            allowanceTo,
-            token: currentState.params.fromTokenAddress,
-            amount: currentState.params.amount,
-            chainId: currentState.params.fromTokenChainId,
-            sender: currentState.params.senderAddress,
-          },
-          pathname: '/tx/approve',
-        }}
-      >
-        {`Approve Token`}
-      </Button>,
-    ];
-  }
 
   return {
     image: (
@@ -88,9 +44,9 @@ const handleRequest = frames(async (ctx) => {
       </div>
     ),
     buttons: [
-      ...buttons,
       <Button
         action='tx'
+        post_url={'/tx/explorer'}
         target={{
           pathname: '/tx/bridge',
           query: {

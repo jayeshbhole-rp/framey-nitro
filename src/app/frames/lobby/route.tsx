@@ -22,7 +22,6 @@ const handleRequest = frames(async (ctx) => {
       fromTokenChainId: ctx.searchParams.fromTokenChainId,
       toTokenAddress: ctx.searchParams.toTokenAddress,
       toTokenChainId: ctx.searchParams.toTokenChainId,
-      senderAddress: ctx.message?.connectedAddress || zeroAddress,
     };
     currentState.sessionKey = ctx.searchParams.sessionKey;
 
@@ -66,13 +65,13 @@ const handleRequest = frames(async (ctx) => {
         )}
 
         {request?.status === QUOTE_STATUS.SUCCESS && request.quote && (
-          <>
+          <div tw='flex flex-col gap-2'>
             <span tw='mt-8'>
               From: {currentState.params.fromTokenChainId} <br />
               {currentState.params.amount} {currentState.params.fromTokenAddress}
             </span>
 
-            <span>Amount: </span>
+            <span>Amount: {currentState.params.amount}</span>
 
             <span>
               To: {currentState.params.toTokenChainId} <br />
@@ -80,7 +79,7 @@ const handleRequest = frames(async (ctx) => {
             </span>
 
             <span>Bridge Fee: ${bridgeFeeUSD}</span>
-          </>
+          </div>
         )}
       </div>
     ),

@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 
 import { ChainIds, wagmiConfig } from '@/constants/wagmiConfig';
+import { getRequestById, getTransactionById } from '@/utils/pathfinder';
 import { prepareTransactionRequest, simulateContract, writeContract } from '@wagmi/core';
 import { getFrameMessage, TransactionTargetResponse } from 'frames.js';
 import { NextRequest, NextResponse } from 'next/server';
@@ -8,16 +9,27 @@ import { encodeFunctionData, erc20Abi, zeroAddress } from 'viem';
 
 export async function POST(req: NextRequest): Promise<NextResponse<TransactionTargetResponse>> {
   const json = await req.json();
+  const searchParams = new URLSearchParams(req.url.split('?')[1]);
+  const sessionKey = searchParams.get('sessionKey');
 
   const frameMessage = await getFrameMessage(json);
 
-  if (!frameMessage || !frameMessage.state) {
-    throw new Error('No frame message');
+  if (!sessionKey) {
+    throw new Error('No session key');
+  }
+  if (!frameMessage || !frameMessage?.connectedAddress) {
+    throw new Error('No connected address');
   }
 
-  let state = JSON.parse(frameMessage.state);
+  const quote = await getTransactionById({
+    key: sessionKey,
+    sender: frameMessage.connectedAddress,
+  });
 
-  console.log('state', state);
+  if (!quote) {
+    console.log('[TX] No data in quote');
+    throw new Error(`No quote found for session, ${sessionKey}`);
+  }
 
   const approveCall = encodeFunctionData({
     abi: [
@@ -43,15 +55,15 @@ export async function POST(req: NextRequest): Promise<NextResponse<TransactionTa
       },
     ] as const,
     functionName: 'approve',
-    args: [state.allowanceTo, BigInt(state.amount)] as [`0x${string}`, bigint],
+    args: [quote.allowanceTo, BigInt(quote.source.tokenAmount)] as [`0x${string}`, bigint],
   });
 
   return NextResponse.json({
-    chainId: state.chainId,
+    chainId: `eip155:${quote.source.chainId}`,
     method: 'eth_sendTransaction',
     params: {
       abi: [erc20Abi[3]],
-      to: state.token as `0x${string}`,
+      to: quote.source.asset.address as `0x${string}`,
       value: '0x0',
       data: approveCall,
     },

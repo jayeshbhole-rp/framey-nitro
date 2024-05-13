@@ -25,7 +25,7 @@ const handleRequest = frames(async (ctx) => {
     image: (
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center p-8'>
         <span tw='text-[4rem]'>Start bridging to Base!</span>
-        <span>Bridge MATIC to DEGEN</span>
+        <span>Bridge Op ETH to DEGEN</span>
       </div>
     ),
     textInput: 'Enter the amount to bridge',
@@ -37,7 +37,7 @@ const handleRequest = frames(async (ctx) => {
           query: {
             fromTokenAddress: NATIVE,
             fromTokenChainId: '10',
-            toTokenAddress: '0x4ed4e862860bed51a9570b96d89af5e1b0efefed',
+            toTokenAddress: NATIVE,
             toTokenChainId: '8453',
             sessionKey,
           },

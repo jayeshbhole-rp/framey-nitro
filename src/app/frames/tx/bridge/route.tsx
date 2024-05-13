@@ -3,9 +3,6 @@
 import { getTransactionById } from '@/utils/pathfinder';
 import { getFrameMessage, TransactionTargetResponse } from 'frames.js';
 import { NextRequest, NextResponse } from 'next/server';
-import { frames } from '../../frames';
-import { DexSpanAbi } from '@/constants/abi/DexSpan';
-import { AssetForwarderAbi } from '@/constants/abi/AssetForwarder';
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   const json = await req.json();
@@ -21,8 +18,6 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     throw new Error('No connected address');
   }
 
-  console.log(frameMessage.connectedAddress);
-
   const quote = await getTransactionById({
     key: sessionKey,
     sender: frameMessage.connectedAddress,
@@ -32,22 +27,11 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     throw new Error('No quote');
   }
 
-  console.log({
-    chainId: `eip155:${quote.source.chainId}`,
-    method: 'eth_sendTransaction',
-    params: {
-      abi: quote.source.tokenPath ? DexSpanAbi : AssetForwarderAbi,
-      to: quote.txn.to,
-      value: quote.txn.value,
-      data: quote.txn.data,
-    },
-  });
-
   return NextResponse.json({
     chainId: `eip155:${quote.source.chainId}`,
     method: 'eth_sendTransaction',
     params: {
-      abi: quote.source.tokenPath ? DexSpanAbi : AssetForwarderAbi,
+      abi: [],
       to: quote.txn.to,
       value: quote.txn.value,
       data: quote.txn.data,
