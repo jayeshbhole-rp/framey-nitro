@@ -1,9 +1,8 @@
 /* eslint-disable react/jsx-key */
 import { Button } from 'frames.js/next';
-import { frames, initialState, QUOTE_STATUS } from './frames';
-import { NATIVE } from '../../constants';
 import { v4 as uuidv4 } from 'uuid';
-import { PATH_FINDER_API_URL } from '@/utils/pathfinder';
+import { NATIVE, PF_SERVER } from '../../constants';
+import { frames, initialState } from './frames';
 
 const handleRequest = frames(async (ctx) => {
   const currentState = initialState;
@@ -12,7 +11,7 @@ const handleRequest = frames(async (ctx) => {
 
   currentState.sessionKey = sessionKey;
 
-  fetch(PATH_FINDER_API_URL, {
+  fetch(PF_SERVER, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
