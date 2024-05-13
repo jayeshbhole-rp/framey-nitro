@@ -15,9 +15,7 @@ const handleRequest = frames(async (ctx) => {
     buttons: [
       <Button
         action='link'
-        target={{
-          href: `https://explorer.routernitro.com/tx/${ctx.message?.transactionId}`,
-        }}
+        target={`https://explorer.routernitro.com/tx/${ctx.message?.transactionId}`}
       >
         View Transaction
       </Button>,
