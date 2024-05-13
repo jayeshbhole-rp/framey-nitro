@@ -24,7 +24,7 @@ const handleRequest = frames(async (ctx) => {
     image: (
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center p-8'>
         <span tw='text-[4rem]'>Start bridging to Base!</span>
-        <span>Bridge Op ETH to DEGEN</span>
+        <span>Bridge Op ETH to Base ETH</span>
       </div>
     ),
     textInput: 'Enter the amount to bridge',
