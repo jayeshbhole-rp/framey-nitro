@@ -9,7 +9,9 @@ const handleRequest = frames(async (ctx) => {
   return {
     image: (
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center justify-center'>
-        EXPLORER
+        <span tw='text-[4rem] text-green-500'>Transaction Successful</span>
+
+        <span>Track your transaction on the explorer</span>
       </div>
     ),
     buttons: [
