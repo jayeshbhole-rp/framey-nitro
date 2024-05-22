@@ -28,3 +28,14 @@ export const getBridgeFeeInUSD = async (quoteBridgeFee: BridgeFee) => {
 
   return bridgeFeeUSD.toString();
 };
+
+export const getImageURI = (path: string) => {
+  if (path.startsWith('http')) return path;
+  const publicPath = process.env.PUBLIC_URL || '';
+
+  if (publicPath) {
+    return `${publicPath}images/${path}`;
+  }
+
+  return `http://localhost:3000${path}`;
+};
