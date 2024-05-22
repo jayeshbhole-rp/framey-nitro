@@ -11,5 +11,10 @@ export async function generateMetadata() {
 }
 
 export default function Page() {
-  return <span>My First Page</span>;
+  return (
+    <>
+      <span>Root</span> <br />
+      <span className='font-joystix'>Nitro Bridge Frame</span>
+    </>
+  );
 }
