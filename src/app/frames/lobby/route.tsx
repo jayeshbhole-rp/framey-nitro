@@ -4,10 +4,27 @@ import { frames, QUOTE_STATUS } from '@/app/frames/frames';
 import { getBridgeFeeInUSD } from '@/utils';
 import { getRequestById, RequestResponse } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
+import { v4 as uuidv4 } from 'uuid';
 import { parseUnits, zeroAddress } from 'viem';
 
+export const runtime = 'edge';
+const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+const ibmPlexMonoFont = fetch(new URL('/public/fonts/IBMPlexMono-Regular.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+
 const handleRequest = frames(async (ctx) => {
+  const [joystixFontData, ibmPlexMonoFontData] = await Promise.all([joystixFont, ibmPlexMonoFont]);
+
   let currentState = ctx.state;
+
+  if (!currentState.sessionKey) {
+    const sessionKey = uuidv4();
+    currentState.sessionKey = sessionKey;
+  }
+
   let readyForTx = false;
   let bridgeFeeUSD = '0';
   let request: RequestResponse;
@@ -16,22 +33,15 @@ const handleRequest = frames(async (ctx) => {
       throw new Error('No input text');
     }
 
-    currentState.params = {
-      amount: ctx.message?.inputText || '0',
-      fromTokenAddress: ctx.searchParams.fromTokenAddress,
-      fromTokenChainId: ctx.searchParams.fromTokenChainId,
-      toTokenAddress: ctx.searchParams.toTokenAddress,
-      toTokenChainId: ctx.searchParams.toTokenChainId,
-    };
-    currentState.sessionKey = ctx.searchParams.sessionKey;
+    currentState.params.amount = ctx.message?.inputText || '0';
 
     request = await getRequestById({
       args: {
         amount: parseUnits(currentState.params.amount, 18).toString(),
         fromTokenAddress: currentState.params.fromTokenAddress,
-        fromTokenChainId: currentState.params.fromTokenChainId,
+        fromTokenChainId: currentState.params.fromChainId.toString(),
         toTokenAddress: currentState.params.toTokenAddress,
-        toTokenChainId: currentState.params.toTokenChainId,
+        toTokenChainId: currentState.params.toChainId.toString(),
       },
       key: currentState.sessionKey,
     });
@@ -42,8 +52,6 @@ const handleRequest = frames(async (ctx) => {
   }
 
   currentState.status = request?.status || QUOTE_STATUS.PENDING;
-
-  console.log('request', request);
 
   if (request.status === QUOTE_STATUS.SUCCESS && request.quote) {
     readyForTx = true;
@@ -67,14 +75,14 @@ const handleRequest = frames(async (ctx) => {
         {request?.status === QUOTE_STATUS.SUCCESS && request.quote && (
           <div tw='flex flex-col gap-2'>
             <span tw='mt-8'>
-              From: {currentState.params.fromTokenChainId} <br />
+              From: {currentState.params.fromChainId} <br />
               {currentState.params.amount} {currentState.params.fromTokenAddress}
             </span>
 
             <span>Amount: {currentState.params.amount}</span>
 
             <span>
-              To: {currentState.params.toTokenChainId} <br />
+              To: {currentState.params.toChainId} <br />
               {currentState.params.toTokenAddress}
             </span>
 

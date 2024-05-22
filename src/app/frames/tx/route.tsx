@@ -28,16 +28,16 @@ const handleRequest = frames(async (ctx) => {
     image: (
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center justify-center'>
         <span>Bridge Quote</span>
-        <span>Amount: {currentState.params.amount}</span>
+        <span>Amount: {ctx.searchParams.amount}</span>
         {/* <span>Quote Id: {currentState.sessionKey}</span> */}
         <span>Quote Status: {currentState.status}</span>
 
         <span tw='mt-8'>
-          From: {currentState.params.fromTokenChainId} - {shortenAddress(currentState.params.fromTokenAddress)}
+          From: {ctx.searchParams.fromTokenChainId} - {shortenAddress(ctx.searchParams.fromTokenAddress)}
         </span>
 
         <span>
-          To: {currentState.params.toTokenChainId} - {shortenAddress(currentState.params.toTokenAddress)}
+          To: {ctx.searchParams.toTokenChainId} - {shortenAddress(ctx.searchParams.toTokenAddress)}
         </span>
 
         <span>Bridge Fee: ${bridgeFeeUSD}</span>

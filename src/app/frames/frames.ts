@@ -13,9 +13,9 @@ export type State = {
   params: {
     amount: string;
     fromTokenAddress: string;
-    fromTokenChainId: string;
+    fromChainId: number;
     toTokenAddress: string;
-    toTokenChainId: string;
+    toChainId: number;
   };
 };
 
@@ -25,9 +25,9 @@ export const initialState: State = {
   params: {
     amount: '',
     fromTokenAddress: '',
-    fromTokenChainId: '',
+    fromChainId: 0,
     toTokenAddress: '',
-    toTokenChainId: '',
+    toChainId: 0,
   },
 };
 

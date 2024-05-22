@@ -1,0 +1,276 @@
+/* eslint-disable react/jsx-key */
+/* eslint-disable @next/next/no-img-element */
+
+import { frames } from '@/app/frames/frames';
+import { SUPPORTED_CHAINS, TokenData, tokenWhitelist } from '@/constants';
+import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { getImageURI } from '@/utils';
+import { Button } from 'frames.js/next';
+
+export const runtime = 'edge';
+const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+const ibmPlexMonoFont = fetch(new URL('/public/fonts/IBMPlexMono-Regular.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+
+enum Steps {
+  NONE = 'NONE',
+  SOURCE_CHAIN = 'SOURCE_CHAIN',
+  SOURCE_TOKEN = 'SOURCE_TOKEN',
+  DEST_CHAIN = 'DEST_CHAIN',
+  DEST_TOKEN = 'DEST_TOKEN',
+  AMOUNT = 'AMOUNT',
+}
+
+const handleRequest = frames(async (ctx) => {
+  const [joystixFontData, ibmPlexMonoFontData] = await Promise.all([joystixFont, ibmPlexMonoFont]);
+
+  let currentState = ctx.state;
+
+  currentState.params = {
+    toTokenAddress: currentState.params.toTokenAddress || ctx.searchParams.toTokenAddress,
+    toChainId: currentState.params.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
+    fromTokenAddress: currentState.params.fromTokenAddress || ctx.searchParams.fromTokenAddress,
+    fromChainId: currentState.params.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+    amount: '',
+  };
+
+  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId } = currentState.params;
+
+  let step: Steps = Steps.NONE;
+
+  let toTokenData: TokenData | undefined = undefined;
+  let fromTokenData: TokenData | undefined = undefined;
+
+  if (!fromChainId) {
+    step = Steps.SOURCE_CHAIN;
+  } else if (!fromTokenAddress) {
+    step = Steps.SOURCE_TOKEN;
+  } else if (!toChainId) {
+    step = Steps.DEST_CHAIN;
+  } else if (!toTokenAddress) {
+    step = Steps.DEST_TOKEN;
+  } else {
+    step = Steps.AMOUNT;
+
+    fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress.toLowerCase()];
+    toTokenData = tokenWhitelist[toChainId][toTokenAddress.toLowerCase()];
+
+    if (!fromTokenData || !toTokenData) {
+      console.log('Invalid token configuration');
+      throw new Error('Invalid token configuration');
+    }
+  }
+
+  let buttons: any = [];
+
+  if (step === Steps.AMOUNT) {
+    buttons = [
+      <Button
+        action='post'
+        target={{
+          pathname: '/lobby',
+        }}
+      >
+        Get Quote
+      </Button>,
+    ];
+  } else if (step === Steps.SOURCE_CHAIN) {
+    buttons = SUPPORTED_CHAINS.map((chainId) => (
+      <Button
+        action='post'
+        target={{
+          pathname: '/inputs',
+          query: {
+            fromChainId: chainId,
+          },
+        }}
+      >
+        {CHAINS[chainId]}
+      </Button>
+    ));
+  } else if (step === Steps.DEST_CHAIN) {
+    buttons = Object.values(tokenWhitelist[fromChainId]).map((token) => (
+      <Button
+        action='post'
+        target={{
+          pathname: '/inputs',
+          query: {
+            fromTokenAddress: token.address,
+          },
+        }}
+      >
+        {token.symbol}
+      </Button>
+    ));
+  } else if (step === Steps.DEST_TOKEN) {
+    buttons = Object.values(tokenWhitelist[toChainId]).map((token) => (
+      <Button
+        action='post'
+        target={{
+          pathname: '/inputs',
+          query: {
+            toTokenAddress: token.address,
+          },
+        }}
+      >
+        {token.symbol}
+      </Button>
+    ));
+  }
+
+  return {
+    image: (
+      <div
+        tw='flex h-full w-full flex-col bg-[#fff] text-neutral-100 items-center p-8'
+        style={{
+          fontFamily: 'Joystix',
+        }}
+      >
+        {/* bg */}
+        <img
+          tw='absolute top-0 left-0 w-[916px] h-[480px]'
+          src={getImageURI('/images/template.png')}
+          alt=''
+          width={916}
+          height={480}
+        />
+
+        <div tw='mt-10' />
+
+        {step === Steps.SOURCE_CHAIN && (
+          <div tw='flex flex-col items-center'>
+            <span tw='text-[2rem]'>Select Source Chain</span>
+
+            <div tw='mt-4' />
+
+            <div tw='flex flex-col items-start mx-auto'>
+              {SUPPORTED_CHAINS.map((chainId) => (
+                <div
+                  tw='flex items-center mt-4'
+                  key={chainId}
+                >
+                  <img
+                    tw='w-[3rem] h-[3rem] mr-4'
+                    src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
+                    width={64}
+                    height={64}
+                    alt=''
+                  />
+                  <span tw='text-[2.5rem]'>{CHAINS[chainId]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === Steps.DEST_CHAIN && (
+          <div tw='flex flex-col items-center'>
+            <span tw='text-[2rem]'>Select Source Chain</span>
+
+            <div tw='mt-4' />
+
+            <div tw='flex flex-col items-start mx-auto'>
+              {SUPPORTED_CHAINS.map((chainId) => (
+                <div
+                  tw='flex items-center mt-4'
+                  key={chainId}
+                >
+                  <img
+                    tw='w-[3rem] h-[3rem] mr-4'
+                    src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
+                    width={64}
+                    height={64}
+                    alt=''
+                  />
+                  <span tw='text-[2.5rem]'>{CHAINS[chainId]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === Steps.DEST_TOKEN && (
+          <div tw='flex flex-col items-center'>
+            <span tw='text-[2rem]'>Select Destination Token</span>
+
+            <div tw='mt-4' />
+
+            <div tw='mx-auto flex flex-wrap'>
+              {Object.values(tokenWhitelist[toChainId]).map((token) => (
+                <div
+                  tw='flex items-center mt-4 mr-4'
+                  key={token.address}
+                >
+                  <img
+                    tw='w-[3rem] h-[3rem] mr-4'
+                    src={getImageURI(`/images/tokens/${[token.address]}.png`)}
+                    width={64}
+                    height={64}
+                    alt=''
+                  />
+                  <span tw='text-[2.5rem]'>{token.symbol}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === Steps.AMOUNT && fromTokenData && toTokenData && (
+          <div tw='flex flex-col items-center mx-auto'>
+            <span tw='text-[2rem] text-center'>Enter Amount To Bridge</span>
+
+            <div tw='flex flex-col items-start mx-auto'>
+              <div tw='flex items-center mt-4 mr-4'>
+                -
+                <img
+                  tw='w-[3rem] h-[3rem] mx-4'
+                  src={getImageURI(`/images/chains/${CHAINS[fromChainId as ChainIds]}.png`)}
+                  width={64}
+                  height={64}
+                  alt=''
+                />
+                <span tw='text-[2.5rem] text-red-500'>{fromTokenData.symbol}</span>
+              </div>
+
+              <div tw='flex items-center mt-4 mr-4'>
+                +
+                <img
+                  tw='w-[3rem] h-[3rem] mx-4'
+                  src={getImageURI(`/images/chains/${CHAINS[toChainId as ChainIds]}.png`)}
+                  width={64}
+                  height={64}
+                  alt=''
+                />
+                <span tw='text-[2.5rem] text-lime-500'>{toTokenData.symbol}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    ),
+    textInput: step === Steps.AMOUNT ? 'Enter the amount to bridge' : undefined,
+    buttons: buttons,
+    state: currentState,
+    imageOptions: {
+      width: 916,
+      height: 480,
+      aspectRatio: '1.91:1',
+      fonts: [
+        {
+          name: 'IBMPlexMono',
+          data: ibmPlexMonoFontData,
+        },
+        {
+          name: 'Joystix',
+          data: joystixFontData,
+        },
+      ],
+    },
+  };
+});
+
+export const GET = handleRequest;
+export const POST = handleRequest;

@@ -1,15 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
 import { Button } from 'frames.js/next';
-import { v4 as uuidv4 } from 'uuid';
-import { NATIVE, PF_SERVER } from '../../constants';
-import { frames, initialState } from './frames';
+import { NATIVE, PF_SERVER, tokenWhitelist } from '../../constants';
+import { frames } from './frames';
+import { getImageURI } from '@/utils';
+import { getToken, GetTokenReturnType } from '@wagmi/core';
+import { ChainIds, CHAINS, wagmiConfig } from '@/constants/wagmiConfig';
+
+export const runtime = 'edge';
+const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+const ibmPlexMonoFont = fetch(new URL('/public/fonts/IBMPlexMono-Regular.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
 
 const handleRequest = frames(async (ctx) => {
-  const currentState = initialState;
-
-  const sessionKey = uuidv4();
-
-  currentState.sessionKey = sessionKey;
+  const [joystixFontData, ibmPlexMonoFontData] = await Promise.all([joystixFont, ibmPlexMonoFont]);
 
   fetch(PF_SERVER, {
     method: 'GET',
@@ -20,32 +27,118 @@ const handleRequest = frames(async (ctx) => {
     console.error(err);
   });
 
+  const toTokenAddress = ctx.searchParams.toTokenAddress;
+  const toChainId = Number(ctx.searchParams.toChainId) as ChainIds;
+
+  const tokenData = tokenWhitelist[toChainId]?.[toTokenAddress];
+
+  if (toTokenAddress && toChainId && !tokenData) {
+    throw new Error('Token not supported');
+  }
+
   return {
     image: (
-      <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center p-8'>
-        <span tw='text-[4rem]'>Start bridging to Base!</span>
-        <span>Bridge Op ETH to Base ETH</span>
+      <div tw='flex h-full w-full flex-col bg-[#fff] text-neutral-100 items-center p-8'>
+        {/* bg */}
+        <img
+          tw='absolute top-0 left-0 w-[916px] h-[480px]'
+          src={getImageURI('/images/template.png')}
+          alt=''
+          width={916}
+          height={480}
+        />
+
+        <div tw='mt-10' />
+
+        <div
+          tw='flex w-full flex-col items-center'
+          style={{
+            fontFamily: 'Joystix',
+          }}
+        >
+          <span tw='text-[2rem]'>{tokenData ? 'Zap To' : 'Bridge With'}</span>
+          {tokenData ? (
+            <span tw='text-yellow-500 flex justify-center items-center'>
+              <img
+                tw='w-[3rem] h-[3rem] mr-2 my-auto'
+                src={getImageURI(`/images/${CHAINS[toChainId]}.png`)}
+                width={64}
+                height={64}
+                alt=''
+              />
+              <span tw='text-[3rem]'>${tokenData.symbol}</span>
+            </span>
+          ) : (
+            <span tw='text-yellow-500 flex justify-center items-center'>
+              <span tw='text-[3rem]'>Nitro</span>
+            </span>
+          )}
+          <span tw='text-[2rem]'>In a Blink!</span>
+        </div>
+
+        <div tw='flex absolute w-[916px] bottom-[6rem] left-0 justify-center'>Bridge From</div>
+        <div tw='flex absolute w-[916px] bottom-2 left-0 justify-center'>
+          <img
+            tw='w-[4rem] h-[4rem]'
+            src={getImageURI('/images/chains/ethereum.png')}
+            width={64}
+            height={64}
+            alt=''
+          />
+          <img
+            tw='w-[4rem] h-[4rem]'
+            src={getImageURI('/images/chains/base.png')}
+            width={64}
+            height={64}
+            alt=''
+          />
+          <img
+            tw='w-[4rem] h-[4rem]'
+            src={getImageURI('/images/chains/optimism.png')}
+            width={64}
+            height={64}
+            alt=''
+          />
+          <img
+            tw='w-[4rem] h-[4rem]'
+            src={getImageURI('/images/chains/arbitrum.png')}
+            width={64}
+            height={64}
+            alt=''
+          />
+        </div>
       </div>
     ),
-    textInput: 'Enter the amount to bridge',
     buttons: [
       <Button
         action='post'
         target={{
-          pathname: '/lobby',
+          pathname: '/inputs',
           query: {
+            toTokenAddress: tokenData ? tokenData.address : '',
+            toChainId: tokenData ? toChainId : '',
             fromTokenAddress: NATIVE,
-            fromTokenChainId: '10',
-            toTokenAddress: NATIVE,
-            toTokenChainId: '8453',
-            sessionKey,
           },
         }}
       >
-        Get Quote
+        Start Bridging
       </Button>,
     ],
-    state: currentState,
+    imageOptions: {
+      width: 916,
+      height: 480,
+      aspectRatio: '1.91:1',
+      fonts: [
+        {
+          name: 'IBMPlexMono',
+          data: ibmPlexMonoFontData,
+        },
+        {
+          name: 'Joystix',
+          data: joystixFontData,
+        },
+      ],
+    },
   };
 });
 
