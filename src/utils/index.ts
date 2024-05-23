@@ -1,6 +1,8 @@
 import { BridgeFee } from '@/types';
 import { formatUnits } from 'viem';
 
+export const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
+
 export const isTokenETH = (address: string) =>
   address && address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 export const areTokensEqual = (tokenA: string, tokenB: string) => tokenA.toLowerCase() === tokenB.toLowerCase();

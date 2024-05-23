@@ -4,7 +4,7 @@
 import { frames } from '@/app/frames/frames';
 import { SUPPORTED_CHAINS, TokenData, tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { getImageURI } from '@/utils';
+import { capitalize, getImageURI } from '@/utils';
 import { Button } from 'frames.js/next';
 
 export const runtime = 'edge';
@@ -64,8 +64,6 @@ const handleRequest = frames(async (ctx) => {
     }
   }
 
-  console.log('Step:', step);
-
   let buttons: any = [];
 
   if (step === Steps.AMOUNT) {
@@ -90,7 +88,7 @@ const handleRequest = frames(async (ctx) => {
           },
         }}
       >
-        {CHAINS[chainId]}
+        {capitalize(CHAINS[chainId])}
       </Button>
     ));
   } else if (step === Steps.DEST_CHAIN) {
@@ -104,11 +102,11 @@ const handleRequest = frames(async (ctx) => {
           },
         }}
       >
-        {CHAINS[chainId]}
+        {capitalize(CHAINS[chainId])}
       </Button>
     ));
   } else if (step === Steps.DEST_TOKEN) {
-    buttons = Object.values(tokenWhitelist[toChainId]).map((token) => (
+    buttons = Object.values(tokenWhitelist[toChainId]).map((token, index) => (
       <Button
         action='post'
         target={{
@@ -118,7 +116,7 @@ const handleRequest = frames(async (ctx) => {
           },
         }}
       >
-        {token.symbol}
+        {capitalize(token.symbol)}
       </Button>
     ));
   }
@@ -149,11 +147,13 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mt-4' />
 
             <div tw='flex flex-col items-start mx-auto'>
-              {SUPPORTED_CHAINS.map((chainId) => (
+              {SUPPORTED_CHAINS.map((chainId, index) => (
                 <div
                   tw='flex items-center mt-4'
                   key={chainId}
                 >
+                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+
                   <img
                     tw='w-[3rem] h-[3rem] mr-4'
                     src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
@@ -175,11 +175,13 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mt-4' />
 
             <div tw='flex flex-col items-start mx-auto'>
-              {SUPPORTED_CHAINS.map((chainId) => (
+              {SUPPORTED_CHAINS.map((chainId, index) => (
                 <div
                   tw='flex items-center mt-4'
                   key={chainId}
                 >
+                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+
                   <img
                     tw='w-[3rem] h-[3rem] mr-4'
                     src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
@@ -201,11 +203,13 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mt-4' />
 
             <div tw='mx-auto flex flex-wrap'>
-              {Object.values(tokenWhitelist[toChainId]).map((token) => (
+              {Object.values(tokenWhitelist[toChainId]).map((token, index) => (
                 <div
                   tw='flex items-center mt-4 mr-4'
                   key={token.address}
                 >
+                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+
                   <img
                     tw='w-[3rem] h-[3rem] mr-4'
                     src={getImageURI(`/images/tokens/${[token.address]}.png`)}
