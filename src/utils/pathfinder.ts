@@ -16,7 +16,7 @@ export const getPfQuote = async (params: {
 
   try {
     // const res = await axios.get(quoteUrl, { params });
-    const paramsString = new URLSearchParams(params).toString();
+    const paramsString = new URLSearchParams({ ...params, slippageTolerance: '2' }).toString();
     console.log(`${PATH_FINDER_API_URL}${endpoint}?${paramsString}`);
 
     const res = await fetch(`${PATH_FINDER_API_URL}${endpoint}?${paramsString}`, {
