@@ -101,7 +101,13 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
       <Button
         action='post'
-        target={{ pathname: '/' }}
+        target={{
+          pathname: '/',
+          query: {
+            toTokenAddress: currentState.l.tTA ? toTokenAddress : '',
+            toChainId: currentState.l.tCID ? toChainId : '',
+          },
+        }}
       >
         Cancel
       </Button>,
@@ -116,7 +122,13 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
       <Button
         action='post'
-        target={{ pathname: '/' }}
+        target={{
+          pathname: '/',
+          query: {
+            toTokenAddress: currentState.l.tTA ? toTokenAddress : '',
+            toChainId: currentState.l.tCID ? toChainId : '',
+          },
+        }}
       >
         Cancel
       </Button>,
