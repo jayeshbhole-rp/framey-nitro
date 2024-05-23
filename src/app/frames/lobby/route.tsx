@@ -4,12 +4,12 @@
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
 import { tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { capitalize, getBridgeFeeInUSD, getImageURI } from '@/utils';
+import { getBridgeFeeInUSD, getImageURI } from '@/utils';
 import { formatNumber } from '@/utils/formatNumber';
 import { getRequestById, RequestResponse } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
 import { v4 as uuidv4 } from 'uuid';
-import { formatUnits, parseUnits, zeroAddress } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>

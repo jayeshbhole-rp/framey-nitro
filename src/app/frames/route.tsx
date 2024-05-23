@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
+import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { getImageURI } from '@/utils';
 import { Button } from 'frames.js/next';
 import { NATIVE, PF_SERVER, tokenWhitelist } from '../../constants';
 import { frames } from './frames';
-import { getImageURI } from '@/utils';
-import { getToken, GetTokenReturnType } from '@wagmi/core';
-import { ChainIds, CHAINS, wagmiConfig } from '@/constants/wagmiConfig';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
