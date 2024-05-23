@@ -39,15 +39,15 @@ const handleRequest = frames(async (ctx) => {
       throw new Error('No input text');
     }
 
-    currentState.p.amount = ctx.message?.inputText || '0';
+    currentState.p.amt = ctx.message?.inputText || '0';
 
     quoteRequest = await getRequestById({
       args: {
-        amount: parseUnits(currentState.p.amount, 18).toString(),
-        fromTokenAddress: currentState.p.fromTokenAddress,
-        fromTokenChainId: currentState.p.fromChainId.toString(),
-        toTokenAddress: currentState.p.toTokenAddress,
-        toTokenChainId: currentState.p.toChainId.toString(),
+        amount: parseUnits(currentState.p.amt, 18).toString(),
+        fromTokenAddress: currentState.p.fTA,
+        fromTokenChainId: currentState.p.fCID.toString(),
+        toTokenAddress: currentState.p.tTA,
+        toTokenChainId: currentState.p.tCID.toString(),
       },
       key: currentState.skey,
     });
@@ -55,11 +55,11 @@ const handleRequest = frames(async (ctx) => {
     quoteRequest = await getRequestById({
       key: currentState.skey,
       args: {
-        amount: parseUnits(currentState.p.amount, 18).toString(),
-        fromTokenAddress: currentState.p.fromTokenAddress,
-        fromTokenChainId: currentState.p.fromChainId.toString(),
-        toTokenAddress: currentState.p.toTokenAddress,
-        toTokenChainId: currentState.p.toChainId.toString(),
+        amount: parseUnits(currentState.p.amt, 18).toString(),
+        fromTokenAddress: currentState.p.fTA,
+        fromTokenChainId: currentState.p.fCID.toString(),
+        toTokenAddress: currentState.p.tTA,
+        toTokenChainId: currentState.p.tCID.toString(),
       },
     });
   }
@@ -74,7 +74,13 @@ const handleRequest = frames(async (ctx) => {
     readyForTx = false;
   }
 
-  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId, amount } = currentState.p;
+  const {
+    tTA: toTokenAddress,
+    tCID: toChainId,
+    fTA: fromTokenAddress,
+    fCID: fromChainId,
+    amt: amount,
+  } = currentState.p;
   const fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress];
   const toTokenData = tokenWhitelist[toChainId][toTokenAddress];
 

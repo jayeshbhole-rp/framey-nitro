@@ -11,11 +11,11 @@ export type State = {
   skey: string;
   status: QUOTE_STATUS;
   p: {
-    amount: string;
-    fromTokenAddress: string;
-    fromChainId: number;
-    toTokenAddress: string;
-    toChainId: number;
+    amt: string;
+    fTA: string;
+    fCID: number;
+    tTA: string;
+    tCID: number;
   };
   tx: string;
 };
@@ -24,11 +24,11 @@ export const initialState: State = {
   skey: '',
   status: QUOTE_STATUS.NONE,
   p: {
-    amount: '',
-    fromTokenAddress: '',
-    fromChainId: 0,
-    toTokenAddress: '',
-    toChainId: 0,
+    amt: '',
+    fTA: '',
+    fCID: 0,
+    tTA: '',
+    tCID: 0,
   },
   tx: '',
 };

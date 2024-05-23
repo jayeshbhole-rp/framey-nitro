@@ -91,7 +91,7 @@ const handleRequest = frames(async (ctx) => {
               }}
             >
               <span tw='text-[2rem] text-green-500'>
-                Submitted on {capitalize(CHAINS[currentState.p.fromChainId as ChainIds])}
+                Submitted on {capitalize(CHAINS[currentState.p.fCID as ChainIds])}
               </span>
             </div>
           ) : !tx?.dest_tx_hash ? (
@@ -102,7 +102,7 @@ const handleRequest = frames(async (ctx) => {
               }}
             >
               <span tw='text-[2rem] text-yellow-500'>
-                Zapping to {capitalize(CHAINS[currentState.p.toChainId as ChainIds])}
+                Zapping to {capitalize(CHAINS[currentState.p.tCID as ChainIds])}
               </span>
             </div>
           ) : tx.status === 'completed' ? (

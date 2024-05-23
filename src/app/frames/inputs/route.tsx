@@ -33,23 +33,23 @@ const handleRequest = frames(async (ctx) => {
     currentState.skey = '';
     currentState.status = QUOTE_STATUS.NONE;
     currentState.p = {
-      toTokenAddress: ctx.searchParams.toTokenAddress,
-      toChainId: Number(ctx.searchParams.toChainId || 0) as ChainIds,
-      fromTokenAddress: ctx.searchParams.fromTokenAddress,
-      fromChainId: Number(ctx.searchParams.fromChainId || 0) as ChainIds,
-      amount: '',
+      tTA: ctx.searchParams.toTokenAddress,
+      tCID: Number(ctx.searchParams.toChainId || 0) as ChainIds,
+      fTA: ctx.searchParams.fromTokenAddress,
+      fCID: Number(ctx.searchParams.fromChainId || 0) as ChainIds,
+      amt: '',
     };
   } else {
     currentState.p = {
-      toTokenAddress: currentState.p.toTokenAddress || ctx.searchParams.toTokenAddress,
-      toChainId: currentState.p.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
-      fromTokenAddress: currentState.p.fromTokenAddress || ctx.searchParams.fromTokenAddress,
-      fromChainId: currentState.p.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
-      amount: '',
+      tTA: currentState.p.tTA || ctx.searchParams.toTokenAddress,
+      tCID: currentState.p.tCID || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
+      fTA: currentState.p.fTA || ctx.searchParams.fromTokenAddress,
+      fCID: currentState.p.fCID || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+      amt: '',
     };
   }
 
-  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId } = currentState.p;
+  const { tTA: toTokenAddress, tCID: toChainId, fTA: fromTokenAddress, fCID: fromChainId } = currentState.p;
 
   let step: Steps = Steps.NONE;
 
