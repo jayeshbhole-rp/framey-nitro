@@ -30,12 +30,8 @@ const handleRequest = frames(async (ctx) => {
 
   const tx = await getTransactionFromExplorer(currentState.tx);
 
-  if (!tx) {
-    throw new Error('No transaction found');
-  }
-
   let buttons: any = [];
-  if (tx.status === 'completed' || tx.status === 'failed') {
+  if (tx && (tx.status === 'completed' || tx.status === 'failed')) {
     buttons = [
       <Button
         action='post'
@@ -87,7 +83,7 @@ const handleRequest = frames(async (ctx) => {
             fontFamily: 'Joystix',
           }}
         >
-          {!tx?.src_tx_hash ? (
+          {!tx || !tx?.src_tx_hash ? (
             <div
               tw='flex w-full flex-col items-center'
               style={{
