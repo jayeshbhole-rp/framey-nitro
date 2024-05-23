@@ -202,7 +202,9 @@ const handleRequest = frames(async (ctx) => {
 
         {step === Steps.DEST_TOKEN && (
           <div tw='flex flex-col items-center'>
-            <span tw='text-[2rem]'>Select Destination Token</span>
+            <span tw='text-[2rem]'>
+              Select <span tw='mx-[1rem] text-green-500'>Destination</span> Token
+            </span>
 
             <div tw='mt-4' />
 
