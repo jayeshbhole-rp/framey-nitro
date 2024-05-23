@@ -60,7 +60,7 @@ const handleRequest = frames(async (ctx) => {
             <span tw='text-yellow-500 flex justify-center items-center'>
               <img
                 tw='w-[3rem] h-[3rem] mr-2 my-auto'
-                src={getImageURI(`/images/${CHAINS[toChainId]}.png`)}
+                src={getImageURI(`/images/chains/${CHAINS[toChainId]}.png`)}
                 width={64}
                 height={64}
                 alt=''
