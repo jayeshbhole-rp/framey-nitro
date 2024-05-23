@@ -142,7 +142,9 @@ const handleRequest = frames(async (ctx) => {
 
         {step === Steps.SOURCE_CHAIN && (
           <div tw='flex flex-col items-center'>
-            <span tw='text-[2rem]'>Select Source Chain</span>
+            <span tw='text-[2rem]'>
+              Select <span tw='mx-[1rem] text-red-500'>Source</span> Chain
+            </span>
 
             <div tw='mt-4' />
 
@@ -152,16 +154,16 @@ const handleRequest = frames(async (ctx) => {
                   tw='flex items-center mt-4'
                   key={chainId}
                 >
-                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+                  <span tw='text-[2rem]'>{index + 1}.</span>
 
                   <img
-                    tw='w-[3rem] h-[3rem] mr-4'
+                    tw='w-[2.5rem] h-[2.5rem] mr-4'
                     src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
                     width={64}
                     height={64}
                     alt=''
                   />
-                  <span tw='text-[2.5rem]'>{CHAINS[chainId]}</span>
+                  <span tw='text-[2rem]'>{CHAINS[chainId]}</span>
                 </div>
               ))}
             </div>
@@ -170,7 +172,9 @@ const handleRequest = frames(async (ctx) => {
 
         {step === Steps.DEST_CHAIN && (
           <div tw='flex flex-col items-center'>
-            <span tw='text-[2rem]'>Select Destination Chain</span>
+            <span tw='text-[2rem]'>
+              Select <span tw='mx-[1rem] text-green-500'>Destination</span> Chain
+            </span>
 
             <div tw='mt-4' />
 
@@ -180,16 +184,16 @@ const handleRequest = frames(async (ctx) => {
                   tw='flex items-center mt-4'
                   key={chainId}
                 >
-                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+                  <span tw='text-[2rem]'>{index + 1}.</span>
 
                   <img
-                    tw='w-[3rem] h-[3rem] mr-4'
+                    tw='w-[2.5rem] h-[2.5rem] mr-4'
                     src={getImageURI(`/images/chains/${CHAINS[chainId]}.png`)}
                     width={64}
                     height={64}
                     alt=''
                   />
-                  <span tw='text-[2.5rem]'>{CHAINS[chainId]}</span>
+                  <span tw='text-[2rem]'>{CHAINS[chainId]}</span>
                 </div>
               ))}
             </div>
@@ -205,19 +209,19 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mx-auto flex flex-wrap'>
               {Object.values(tokenWhitelist[toChainId]).map((token, index) => (
                 <div
-                  tw='flex items-center mt-4 mr-4'
+                  tw='flex items-center m-4'
                   key={token.address}
                 >
-                  <span tw='text-[2.5rem]'>{index + 1}.</span>
+                  <span tw='text-[2rem]'>{index + 1}.</span>
 
-                  <img
+                  {/* <img
                     tw='w-[3rem] h-[3rem] mr-4'
                     src={getImageURI(`/images/tokens/${[token.address]}.png`)}
                     width={64}
                     height={64}
                     alt=''
-                  />
-                  <span tw='text-[2.5rem]'>{token.symbol}</span>
+                  /> */}
+                  <span tw='text-[2rem]'>{token.symbol}</span>
                 </div>
               ))}
             </div>
