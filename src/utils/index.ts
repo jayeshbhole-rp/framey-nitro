@@ -38,7 +38,7 @@ export const getImageURI = (path: string) => {
   const publicPath = process.env.NEXT_PUBLIC_VERCEL_URL || '';
 
   if (publicPath) {
-    return `https://${publicPath}images/${path}`;
+    return `https://${publicPath}${path}`;
   }
 
   return `http://localhost:3000${path}`;
