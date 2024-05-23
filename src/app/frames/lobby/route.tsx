@@ -1,11 +1,15 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { getBridgeFeeInUSD } from '@/utils';
+import { tokenWhitelist } from '@/constants';
+import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { capitalize, getBridgeFeeInUSD, getImageURI } from '@/utils';
+import { formatNumber } from '@/utils/formatNumber';
 import { getRequestById, RequestResponse } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
 import { v4 as uuidv4 } from 'uuid';
-import { parseUnits, zeroAddress } from 'viem';
+import { formatUnits, parseUnits, zeroAddress } from 'viem';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
@@ -14,6 +18,7 @@ const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.
 const ibmPlexMonoFont = fetch(new URL('/public/fonts/IBMPlexMono-Regular.ttf', import.meta.url)).then((res) =>
   res.arrayBuffer(),
 );
+const slippageTolerance = '2';
 
 const handleRequest = frames(async (ctx) => {
   const [joystixFontData, ibmPlexMonoFontData] = await Promise.all([joystixFont, ibmPlexMonoFont]);
@@ -27,7 +32,8 @@ const handleRequest = frames(async (ctx) => {
 
   let readyForTx = false;
   let bridgeFeeUSD = '0';
-  let request: RequestResponse;
+  let quoteRequest: RequestResponse;
+
   if (currentState.status === 'NONE') {
     if (!ctx.message || !ctx.message?.inputText) {
       throw new Error('No input text');
@@ -35,7 +41,7 @@ const handleRequest = frames(async (ctx) => {
 
     currentState.params.amount = ctx.message?.inputText || '0';
 
-    request = await getRequestById({
+    quoteRequest = await getRequestById({
       args: {
         amount: parseUnits(currentState.params.amount, 18).toString(),
         fromTokenAddress: currentState.params.fromTokenAddress,
@@ -46,60 +52,187 @@ const handleRequest = frames(async (ctx) => {
       key: currentState.sessionKey,
     });
   } else {
-    request = await getRequestById({
+    quoteRequest = await getRequestById({
       key: currentState.sessionKey,
+      args: {
+        amount: parseUnits(currentState.params.amount, 18).toString(),
+        fromTokenAddress: currentState.params.fromTokenAddress,
+        fromTokenChainId: currentState.params.fromChainId.toString(),
+        toTokenAddress: currentState.params.toTokenAddress,
+        toTokenChainId: currentState.params.toChainId.toString(),
+      },
     });
   }
 
-  currentState.status = request?.status || QUOTE_STATUS.PENDING;
+  currentState.status = quoteRequest?.status || QUOTE_STATUS.PENDING;
 
-  if (request.status === QUOTE_STATUS.SUCCESS && request.quote) {
+  if (quoteRequest.status === QUOTE_STATUS.SUCCESS && quoteRequest.quote) {
     readyForTx = true;
 
-    bridgeFeeUSD = request.quote.bridgeFee ? await getBridgeFeeInUSD(request.quote.bridgeFee) : 'error';
+    bridgeFeeUSD = quoteRequest.quote.bridgeFee ? await getBridgeFeeInUSD(quoteRequest.quote.bridgeFee) : 'error';
   } else {
     readyForTx = false;
   }
 
+  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId, amount } = currentState.params;
+  const fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress];
+  const toTokenData = tokenWhitelist[toChainId][toTokenAddress];
+
+  let buttons: any = [];
+  if (readyForTx) {
+    buttons = [
+      <Button
+        action={'tx'}
+        post_url={'/tx/explorer'}
+        target={{
+          pathname: '/tx/bridge',
+          query: {
+            sessionKey: currentState.sessionKey,
+          },
+        }}
+      >
+        Bridge
+      </Button>,
+      <Button
+        action='post'
+        target={{ pathname: '/' }}
+      >
+        Cancel
+      </Button>,
+    ];
+  } else {
+    buttons = [
+      <Button
+        action={'post'}
+        target={'/lobby'}
+      >
+        Refresh
+      </Button>,
+      <Button
+        action='post'
+        target={{ pathname: '/' }}
+      >
+        Cancel
+      </Button>,
+    ];
+  }
+
   return {
     image: (
-      <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center p-4'>
-        {!request?.status || request?.status === QUOTE_STATUS.PENDING ? (
-          <span tw='text-yellow-600 text-[4rem]'>Crunching Numbers</span>
-        ) : request?.status === QUOTE_STATUS.SUCCESS ? (
-          <span tw='text-green-500 text-[4rem]'>Accept Quote</span>
-        ) : (
-          <span tw='text-red-500 text-[4rem]'>Failed to Fetch Quote</span>
-        )}
+      <div tw='flex h-full w-full flex-col bg-[#fff] text-neutral-100 items-center p-8'>
+        {/* bg */}
+        <img
+          tw='absolute top-0 left-0 w-[916px] h-[480px]'
+          src={getImageURI('/images/template.png')}
+          alt=''
+          width={916}
+          height={480}
+        />
 
-        {request?.status === QUOTE_STATUS.SUCCESS && request.quote && (
-          <div tw='flex flex-col gap-2'>
-            <span tw='mt-8'>
-              From: {currentState.params.fromChainId} <br />
-              {currentState.params.amount} {currentState.params.fromTokenAddress}
-            </span>
+        <div tw='mt-10' />
 
-            <span>Amount: {currentState.params.amount}</span>
+        <div
+          tw='flex w-full flex-col items-center'
+          style={{
+            fontFamily: 'Joystix',
+          }}
+        >
+          {!quoteRequest?.status || quoteRequest?.status === QUOTE_STATUS.PENDING ? (
+            <span tw='text-yellow-600 text-[2rem]'>Crunching Numbers</span>
+          ) : quoteRequest?.status === QUOTE_STATUS.SUCCESS ? (
+            <span tw='text-yellow-500 text-[2rem]'>Accept Quote</span>
+          ) : (
+            <span tw='text-red-500 text-[2rem]'>Failed to Fetch Quote</span>
+          )}
 
-            <span>
-              To: {currentState.params.toChainId} <br />
-              {currentState.params.toTokenAddress}
-            </span>
+          {quoteRequest?.status === QUOTE_STATUS.SUCCESS && quoteRequest.quote && (
+            <div tw='flex flex-col text-[2rem] justify-start items-start'>
+              <span tw='mt-8 flex flex-col '>
+                <span>Zap From</span>
+                <span tw='text-red-500'>
+                  <img
+                    tw='w-[2.5rem] h-[2.5rem] mr-4'
+                    src={getImageURI(`/images/chains/${CHAINS[fromChainId as ChainIds]}.png`)}
+                    width={64}
+                    height={64}
+                    alt=''
+                  />
+                  {formatNumber(formatUnits(BigInt(quoteRequest.quote.source.tokenAmount), fromTokenData.decimals))}{' '}
+                  {fromTokenData.symbol}
+                </span>
+              </span>
 
-            <span>Bridge Fee: ${bridgeFeeUSD}</span>
-          </div>
-        )}
+              <span tw='mt-8 flex flex-col '>
+                <span>Zap To</span>
+                <span tw='text-green-500'>
+                  <img
+                    tw='w-[2.5rem] h-[2.5rem] mr-4'
+                    src={getImageURI(`/images/chains/${CHAINS[toChainId as ChainIds]}.png`)}
+                    width={64}
+                    height={64}
+                    alt=''
+                  />
+                  {formatNumber(formatUnits(BigInt(quoteRequest.quote.destination.tokenAmount), toTokenData.decimals))}{' '}
+                  {toTokenData.symbol}
+                </span>
+              </span>
+
+              <span
+                tw='mt-12 text-[1.5rem]'
+                style={{
+                  fontFamily: 'IBMPlexMono',
+                }}
+              >
+                Bridge Fee ${formatNumber(bridgeFeeUSD)}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'IBMPlexMono',
+                }}
+                tw='mt-2 text-[1.5rem]'
+              >
+                Slippage {slippageTolerance}%
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     ),
     buttons: [
       <Button
-        action='post'
-        target={{ pathname: readyForTx ? '/tx' : '/lobby' }}
+        action={readyForTx ? 'tx' : 'post'}
+        target={{
+          pathname: readyForTx ? '/tx/bridge' : '/lobby',
+          query: {
+            sessionKey: currentState.sessionKey,
+          },
+        }}
       >
-        {readyForTx ? 'Accept Quote' : 'Refresh'}
+        {readyForTx ? 'Bridge' : 'Refresh'}
+      </Button>,
+      <Button
+        action='post'
+        target={{ pathname: '/' }}
+      >
+        Cancel
       </Button>,
     ],
     state: currentState,
+    imageOptions: {
+      width: 916,
+      height: 480,
+      aspectRatio: '1.91:1',
+      fonts: [
+        {
+          name: 'IBMPlexMono',
+          data: ibmPlexMonoFontData,
+        },
+        {
+          name: 'Joystix',
+          data: joystixFontData,
+        },
+      ],
+    },
   };
 });
 
