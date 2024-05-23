@@ -11,6 +11,8 @@ export const shortenAddress = (address: string | undefined, chars = 4) =>
   address ? `${address.slice(0, chars + 2)}...${address.slice(-chars)}` : '';
 
 export const getBridgeFeeInUSD = async (quoteBridgeFee: BridgeFee) => {
+  if (!quoteBridgeFee?.amount) return '0';
+
   const ethPrice = await fetch(`https://price-api.crypto.com/price/v1/token-price/ethereum`, {
     method: 'GET',
     headers: {
