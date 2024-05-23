@@ -118,6 +118,7 @@ const handleRequest = frames(async (ctx) => {
             toTokenAddress: tokenData ? tokenData.address : '',
             toChainId: tokenData ? toChainId : '',
             fromTokenAddress: NATIVE,
+            newQuote: 'true',
           },
         }}
       >

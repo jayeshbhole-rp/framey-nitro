@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable @next/next/no-img-element */
 
-import { frames } from '@/app/frames/frames';
+import { frames, QUOTE_STATUS } from '@/app/frames/frames';
 import { SUPPORTED_CHAINS, TokenData, tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
 import { capitalize, getImageURI } from '@/utils';
@@ -29,13 +29,25 @@ const handleRequest = frames(async (ctx) => {
 
   let currentState = ctx.state;
 
-  currentState.params = {
-    toTokenAddress: currentState.params.toTokenAddress || ctx.searchParams.toTokenAddress,
-    toChainId: currentState.params.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
-    fromTokenAddress: currentState.params.fromTokenAddress || ctx.searchParams.fromTokenAddress,
-    fromChainId: currentState.params.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
-    amount: '',
-  };
+  if (ctx.searchParams.newQuote === 'true') {
+    currentState.sessionKey = '';
+    currentState.status = QUOTE_STATUS.NONE;
+    currentState.params = {
+      toTokenAddress: ctx.searchParams.toTokenAddress,
+      toChainId: Number(ctx.searchParams.toChainId || 0) as ChainIds,
+      fromTokenAddress: ctx.searchParams.fromTokenAddress,
+      fromChainId: Number(ctx.searchParams.fromChainId || 0) as ChainIds,
+      amount: '',
+    };
+  } else {
+    currentState.params = {
+      toTokenAddress: currentState.params.toTokenAddress || ctx.searchParams.toTokenAddress,
+      toChainId: currentState.params.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
+      fromTokenAddress: currentState.params.fromTokenAddress || ctx.searchParams.fromTokenAddress,
+      fromChainId: currentState.params.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+      amount: '',
+    };
+  }
 
   const { toTokenAddress, toChainId, fromTokenAddress, fromChainId } = currentState.params;
 
@@ -75,6 +87,12 @@ const handleRequest = frames(async (ctx) => {
         }}
       >
         Get Quote
+      </Button>,
+      <Button
+        action='post'
+        target={{ pathname: '/' }}
+      >
+        Cancel
       </Button>,
     ];
   } else if (step === Steps.SOURCE_CHAIN) {
