@@ -43,10 +43,10 @@ const handleRequest = frames(async (ctx) => {
 
     // to persist locked values from search params after cancellation
     currentState.l = {
-      tTA: ctx.searchParams.toTokenAddress ? 't' : '',
-      tCID: (Number(ctx.searchParams.toChainId || 0) as ChainIds) ? 't' : '',
-      fTA: ctx.searchParams.fromTokenAddress ? 't' : '',
-      fCID: (Number(ctx.searchParams.fromChainId || 0) as ChainIds) ? 't' : '',
+      tTA: currentState.l.tTA || ctx.searchParams.toTokenAddress ? 't' : '',
+      tCID: currentState.l.tCID || (Number(ctx.searchParams.toChainId || 0) as ChainIds) ? 't' : '',
+      fTA: currentState.l.fTA || ctx.searchParams.fromTokenAddress ? 't' : '',
+      fCID: currentState.l.fCID || (Number(ctx.searchParams.fromChainId || 0) as ChainIds) ? 't' : '',
     };
   } else {
     currentState.p = {
