@@ -144,11 +144,11 @@ const handleRequest = frames(async (ctx) => {
           }}
         >
           {!quoteRequest?.status || quoteRequest?.status === QUOTE_STATUS.PENDING ? (
-            <span tw='text-yellow-600 text-[2rem]'>Crunching Numbers</span>
+            <span tw='text-yellow-600 text-[2.5rem]'>Crunching Numbers</span>
           ) : quoteRequest?.status === QUOTE_STATUS.SUCCESS ? (
-            <span tw='text-yellow-500 text-[2rem]'>Accept Quote</span>
+            <span tw='text-yellow-500 text-[2.5rem]'>Accept Quote</span>
           ) : (
-            <span tw='text-red-500 text-[2rem]'>Failed to Fetch Quote</span>
+            <span tw='text-red-500 text-[2.5rem]'>Failed to Fetch Quote</span>
           )}
 
           {quoteRequest?.status === QUOTE_STATUS.SUCCESS && quoteRequest.quote && (

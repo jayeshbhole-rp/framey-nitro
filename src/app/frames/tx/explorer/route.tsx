@@ -90,7 +90,7 @@ const handleRequest = frames(async (ctx) => {
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='text-[2rem] text-green-500'>
+              <span tw='text-[2.5rem] text-green-500'>
                 Submitted on {capitalize(CHAINS[currentState.p.fCID as ChainIds])}
               </span>
 
@@ -103,7 +103,7 @@ const handleRequest = frames(async (ctx) => {
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='text-[2rem] text-yellow-500'>
+              <span tw='text-[2.5rem] text-yellow-500'>
                 Zapping to {capitalize(CHAINS[currentState.p.tCID as ChainIds])}
               </span>
 
@@ -144,7 +144,7 @@ const handleRequest = frames(async (ctx) => {
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='mx-auto'>Zapped</span>
+              <span tw='text-[2.5rem] text-yellow-500'>Zapped</span>
 
               <span tw='text-red-500'>
                 <img
@@ -183,7 +183,7 @@ const handleRequest = frames(async (ctx) => {
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='text-[2rem] text-red-500'>Zap Failed</span>
+              <span tw='text-[2.5rem] text-red-500'>Zap Failed</span>
             </div>
           )}
         </div>
