@@ -8,17 +8,19 @@ query($hash: String!) {
     dest_symbol
     dest_timestamp
     dest_chain_id
-    src_tx_hash
     dest_tx_hash
+
+    src_tx_hash
     src_timestamp
     src_chain_id
     src_symbol
-    deposit_id
     src_amount
-    dest_amount
-    src_stable_address
     src_address
+
+    src_stable_address
+    
     status
+    deposit_id
     fee_amount
     fee_address
     fee_symbol

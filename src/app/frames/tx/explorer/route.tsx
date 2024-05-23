@@ -41,7 +41,7 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
       <Button
         action='link'
-        target={`https://explorer.routernitro.com/tx/${ctx.message?.transactionId}`}
+        target={`https://explorer.routernitro.com/tx/${currentState.tx}`}
       >
         Explorer
       </Button>,
@@ -56,7 +56,7 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
       <Button
         action='link'
-        target={`https://explorer.routernitro.com/tx/${ctx.message?.transactionId}`}
+        target={`https://explorer.routernitro.com/tx/${currentState.tx}`}
       >
         Explorer
       </Button>,
@@ -93,6 +93,8 @@ const handleRequest = frames(async (ctx) => {
               <span tw='text-[2rem] text-green-500'>
                 Submitted on {capitalize(CHAINS[currentState.p.fCID as ChainIds])}
               </span>
+
+              <span>Nitro is looking for your transaction</span>
             </div>
           ) : !tx?.dest_tx_hash ? (
             <div
@@ -103,6 +105,36 @@ const handleRequest = frames(async (ctx) => {
             >
               <span tw='text-[2rem] text-yellow-500'>
                 Zapping to {capitalize(CHAINS[currentState.p.tCID as ChainIds])}
+              </span>
+
+              <span tw='text-red-500'>
+                <img
+                  tw='w-[2.5rem] h-[2.5rem] mr-4'
+                  src={getImageURI(`/images/chains/${CHAINS[Number(currentState.p.fCID) as ChainIds]}.png`)}
+                  width={64}
+                  height={72}
+                  alt=''
+                />
+                {formatNumber(currentState.p.amt)} {tokenWhitelist[currentState.p.fCID][currentState.p.fTA].symbol}
+              </span>
+
+              <img
+                tw='w-[2rem] h-[3rem] mx-auto'
+                src={getImageURI('/images/thunder.png')}
+                width={32}
+                height={32}
+                alt=''
+              />
+
+              <span tw='text-green-500'>
+                <img
+                  tw='w-[2.5rem] h-[2.5rem] mr-4'
+                  src={getImageURI(`/images/chains/${CHAINS[Number(currentState.p.tCID) as ChainIds]}.png`)}
+                  width={64}
+                  height={64}
+                  alt=''
+                />
+                {tokenWhitelist[currentState.p.tCID][currentState.p.tTA].symbol}
               </span>
             </div>
           ) : tx.status === 'completed' ? (
