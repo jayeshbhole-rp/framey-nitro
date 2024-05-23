@@ -1,7 +1,7 @@
 import { BridgeFee } from '@/types';
 import { formatUnits } from 'viem';
 
-export const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
+export const capitalize = (word: string) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : '');
 
 export const isTokenETH = (address: string) =>
   address && address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
@@ -42,4 +42,14 @@ export const getImageURI = (path: string) => {
   }
 
   return `http://localhost:3000${path}`;
+};
+
+export const gqlFetcher = async (url: string, query: string, variables: any) => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+  });
+  const json = await response.json();
+  return json.data;
 };
