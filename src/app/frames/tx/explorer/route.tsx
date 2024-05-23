@@ -23,10 +23,10 @@ const handleRequest = frames(async (ctx) => {
 
   let currentState = ctx.state;
 
-  if (!ctx.message?.transactionId) {
-    throw new Error('No transaction ID in message');
+  if (ctx.message?.transactionId) {
+    currentState.tx = ctx.message.transactionId;
   }
-  currentState.tx = ctx.message.transactionId;
+  if (!currentState.tx) throw new Error('No transaction ID in message');
 
   const tx = await getTransactionFromExplorer(currentState.tx);
 
