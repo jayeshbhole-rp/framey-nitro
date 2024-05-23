@@ -10,7 +10,7 @@ const handleRequest = frames(async (ctx) => {
   let currentState = ctx.state;
 
   const txQuote = await getRequestById({
-    key: currentState.sessionKey,
+    key: currentState.skey,
   });
 
   if (!txQuote.quote) {
@@ -26,7 +26,7 @@ const handleRequest = frames(async (ctx) => {
       <div tw='flex h-full w-full flex-col gap-2 bg-neutral-900 text-neutral-100 items-center justify-center'>
         <span>Bridge Quote</span>
         <span>Amount: {ctx.searchParams.amount}</span>
-        {/* <span>Quote Id: {currentState.sessionKey}</span> */}
+        {/* <span>Quote Id: {currentState.skey}</span> */}
         <span>Quote Status: {currentState.status}</span>
 
         <span tw='mt-8'>
@@ -47,7 +47,7 @@ const handleRequest = frames(async (ctx) => {
         target={{
           pathname: '/tx/bridge',
           query: {
-            sessionKey: currentState.sessionKey,
+            sessionKey: currentState.skey,
           },
         }}
       >

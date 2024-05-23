@@ -30,9 +30,9 @@ const handleRequest = frames(async (ctx) => {
   let currentState = ctx.state;
 
   if (ctx.searchParams.newQuote === 'true') {
-    currentState.sessionKey = '';
+    currentState.skey = '';
     currentState.status = QUOTE_STATUS.NONE;
-    currentState.params = {
+    currentState.p = {
       toTokenAddress: ctx.searchParams.toTokenAddress,
       toChainId: Number(ctx.searchParams.toChainId || 0) as ChainIds,
       fromTokenAddress: ctx.searchParams.fromTokenAddress,
@@ -40,16 +40,16 @@ const handleRequest = frames(async (ctx) => {
       amount: '',
     };
   } else {
-    currentState.params = {
-      toTokenAddress: currentState.params.toTokenAddress || ctx.searchParams.toTokenAddress,
-      toChainId: currentState.params.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
-      fromTokenAddress: currentState.params.fromTokenAddress || ctx.searchParams.fromTokenAddress,
-      fromChainId: currentState.params.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+    currentState.p = {
+      toTokenAddress: currentState.p.toTokenAddress || ctx.searchParams.toTokenAddress,
+      toChainId: currentState.p.toChainId || (Number(ctx.searchParams.toChainId || 0) as ChainIds),
+      fromTokenAddress: currentState.p.fromTokenAddress || ctx.searchParams.fromTokenAddress,
+      fromChainId: currentState.p.fromChainId || (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
       amount: '',
     };
   }
 
-  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId } = currentState.params;
+  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId } = currentState.p;
 
   let step: Steps = Steps.NONE;
 

@@ -8,27 +8,29 @@ export enum QUOTE_STATUS {
   SUCCESS = 'SUCCESS',
 }
 export type State = {
-  sessionKey: string;
+  skey: string;
   status: QUOTE_STATUS;
-  params: {
+  p: {
     amount: string;
     fromTokenAddress: string;
     fromChainId: number;
     toTokenAddress: string;
     toChainId: number;
   };
+  tx: string;
 };
 
 export const initialState: State = {
-  sessionKey: '',
+  skey: '',
   status: QUOTE_STATUS.NONE,
-  params: {
+  p: {
     amount: '',
     fromTokenAddress: '',
     fromChainId: 0,
     toTokenAddress: '',
     toChainId: 0,
   },
+  tx: '',
 };
 
 export const frames = createFrames<State>({

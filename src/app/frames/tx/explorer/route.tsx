@@ -3,8 +3,23 @@
 import { frames } from '@/app/frames/frames';
 import { Button } from 'frames.js/next';
 
+export const runtime = 'edge';
+const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+const ibmPlexMonoFont = fetch(new URL('/public/fonts/IBMPlexMono-Regular.ttf', import.meta.url)).then((res) =>
+  res.arrayBuffer(),
+);
+
 const handleRequest = frames(async (ctx) => {
+  const [joystixFontData, ibmPlexMonoFontData] = await Promise.all([joystixFont, ibmPlexMonoFont]);
+
   let currentState = ctx.state;
+
+  if (!ctx.message?.transactionId) {
+    throw new Error('No transaction ID in message');
+  }
+  currentState.tx = ctx.message?.transactionId;
 
   return {
     image: (
@@ -15,14 +30,30 @@ const handleRequest = frames(async (ctx) => {
       </div>
     ),
     buttons: [
+      <Button action='post'>Check Status</Button>,
       <Button
         action='link'
         target={`https://explorer.routernitro.com/tx/${ctx.message?.transactionId}`}
       >
-        View Transaction
+        Explorer
       </Button>,
     ],
     state: currentState,
+    imageOptions: {
+      width: 916,
+      height: 480,
+      aspectRatio: '1.91:1',
+      fonts: [
+        {
+          name: 'IBMPlexMono',
+          data: ibmPlexMonoFontData,
+        },
+        {
+          name: 'Joystix',
+          data: joystixFontData,
+        },
+      ],
+    },
   };
 });
 

@@ -25,9 +25,9 @@ const handleRequest = frames(async (ctx) => {
 
   let currentState = ctx.state;
 
-  if (!currentState.sessionKey) {
+  if (!currentState.skey) {
     const sessionKey = uuidv4();
-    currentState.sessionKey = sessionKey;
+    currentState.skey = sessionKey;
   }
 
   let readyForTx = false;
@@ -39,27 +39,27 @@ const handleRequest = frames(async (ctx) => {
       throw new Error('No input text');
     }
 
-    currentState.params.amount = ctx.message?.inputText || '0';
+    currentState.p.amount = ctx.message?.inputText || '0';
 
     quoteRequest = await getRequestById({
       args: {
-        amount: parseUnits(currentState.params.amount, 18).toString(),
-        fromTokenAddress: currentState.params.fromTokenAddress,
-        fromTokenChainId: currentState.params.fromChainId.toString(),
-        toTokenAddress: currentState.params.toTokenAddress,
-        toTokenChainId: currentState.params.toChainId.toString(),
+        amount: parseUnits(currentState.p.amount, 18).toString(),
+        fromTokenAddress: currentState.p.fromTokenAddress,
+        fromTokenChainId: currentState.p.fromChainId.toString(),
+        toTokenAddress: currentState.p.toTokenAddress,
+        toTokenChainId: currentState.p.toChainId.toString(),
       },
-      key: currentState.sessionKey,
+      key: currentState.skey,
     });
   } else {
     quoteRequest = await getRequestById({
-      key: currentState.sessionKey,
+      key: currentState.skey,
       args: {
-        amount: parseUnits(currentState.params.amount, 18).toString(),
-        fromTokenAddress: currentState.params.fromTokenAddress,
-        fromTokenChainId: currentState.params.fromChainId.toString(),
-        toTokenAddress: currentState.params.toTokenAddress,
-        toTokenChainId: currentState.params.toChainId.toString(),
+        amount: parseUnits(currentState.p.amount, 18).toString(),
+        fromTokenAddress: currentState.p.fromTokenAddress,
+        fromTokenChainId: currentState.p.fromChainId.toString(),
+        toTokenAddress: currentState.p.toTokenAddress,
+        toTokenChainId: currentState.p.toChainId.toString(),
       },
     });
   }
@@ -74,7 +74,7 @@ const handleRequest = frames(async (ctx) => {
     readyForTx = false;
   }
 
-  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId, amount } = currentState.params;
+  const { toTokenAddress, toChainId, fromTokenAddress, fromChainId, amount } = currentState.p;
   const fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress];
   const toTokenData = tokenWhitelist[toChainId][toTokenAddress];
 
@@ -87,7 +87,7 @@ const handleRequest = frames(async (ctx) => {
         target={{
           pathname: '/tx/bridge',
           query: {
-            sessionKey: currentState.sessionKey,
+            sessionKey: currentState.skey,
           },
         }}
       >
@@ -204,7 +204,7 @@ const handleRequest = frames(async (ctx) => {
         target={{
           pathname: readyForTx ? '/tx/bridge' : '/lobby',
           query: {
-            sessionKey: currentState.sessionKey,
+            sessionKey: currentState.skey,
           },
         }}
       >
