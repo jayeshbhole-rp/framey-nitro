@@ -121,7 +121,7 @@ const handleRequest = frames(async (ctx) => {
           },
         }}
       >
-        Start Bridging
+        Start Zapping
       </Button>,
     ],
     imageOptions: {
