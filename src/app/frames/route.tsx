@@ -55,7 +55,7 @@ const handleRequest = frames(async (ctx) => {
             fontFamily: 'Joystix',
           }}
         >
-          <span tw='text-[2rem]'>{tokenData ? 'Zap To' : 'Bridge With'}</span>
+          <span tw='text-[2rem]'>{tokenData ? 'Zap To' : 'Zap With'}</span>
           {tokenData ? (
             <span tw='text-yellow-500 flex justify-center items-center'>
               <img
@@ -75,7 +75,7 @@ const handleRequest = frames(async (ctx) => {
           <span tw='text-[2rem]'>In a Blink!</span>
         </div>
 
-        <div tw='flex absolute w-[916px] bottom-[6rem] left-0 justify-center'>Bridge From</div>
+        <div tw='flex absolute w-[916px] bottom-[6rem] left-0 justify-center'>Zap From</div>
         <div tw='flex absolute w-[916px] bottom-2 left-0 justify-center'>
           <img
             tw='w-[4rem] h-[4rem]'

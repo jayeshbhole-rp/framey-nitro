@@ -91,7 +91,7 @@ const handleRequest = frames(async (ctx) => {
           },
         }}
       >
-        Bridge
+        Zap
       </Button>,
       <Button
         action='post'
@@ -198,25 +198,7 @@ const handleRequest = frames(async (ctx) => {
         </div>
       </div>
     ),
-    buttons: [
-      <Button
-        action={readyForTx ? 'tx' : 'post'}
-        target={{
-          pathname: readyForTx ? '/tx/bridge' : '/lobby',
-          query: {
-            sessionKey: currentState.skey,
-          },
-        }}
-      >
-        {readyForTx ? 'Bridge' : 'Refresh'}
-      </Button>,
-      <Button
-        action='post'
-        target={{ pathname: '/' }}
-      >
-        Cancel
-      </Button>,
-    ],
+    buttons,
     state: currentState,
     imageOptions: {
       width: 916,

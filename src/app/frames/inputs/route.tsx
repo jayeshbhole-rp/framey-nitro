@@ -250,7 +250,7 @@ const handleRequest = frames(async (ctx) => {
 
         {step === Steps.AMOUNT && fromTokenData && toTokenData && (
           <div tw='flex flex-col items-center mx-auto'>
-            <span tw='text-[2rem] text-center'>Enter Amount To Bridge</span>
+            <span tw='text-[2rem] text-center'>Enter Amount To Zap</span>
 
             <div tw='flex flex-col items-start mx-auto'>
               <div tw='flex items-center mt-4 mr-4'>
@@ -281,7 +281,7 @@ const handleRequest = frames(async (ctx) => {
         )}
       </div>
     ),
-    textInput: step === Steps.AMOUNT ? 'Enter the amount to bridge' : undefined,
+    textInput: step === Steps.AMOUNT ? 'Enter the amount of ETH to zap' : undefined,
     buttons: buttons,
     state: currentState,
     imageOptions: {

@@ -41,7 +41,7 @@ const handleRequest = frames(async (ctx) => {
         action='post'
         target='/'
       >
-        Bridge again
+        Zap again
       </Button>,
       <Button
         action='link'
