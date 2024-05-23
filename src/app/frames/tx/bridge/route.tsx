@@ -3,6 +3,7 @@
 import { getTransactionById } from '@/utils/pathfinder';
 import { getFrameMessage, TransactionTargetResponse } from 'frames.js';
 import { NextRequest, NextResponse } from 'next/server';
+import { zeroAddress } from 'viem';
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
   const json = await req.json();
@@ -14,7 +15,12 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
   if (!sessionKey) {
     throw new Error('No session key');
   }
-  if (!frameMessage || !frameMessage?.connectedAddress) {
+  if (
+    !frameMessage ||
+    !frameMessage?.connectedAddress ||
+    frameMessage.connectedAddress === '0x0000000000000000000000000000000000000001' ||
+    frameMessage.connectedAddress === zeroAddress
+  ) {
     throw new Error('No connected address');
   }
 
