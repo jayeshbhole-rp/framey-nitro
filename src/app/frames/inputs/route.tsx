@@ -64,6 +64,8 @@ const handleRequest = frames(async (ctx) => {
     }
   }
 
+  console.log('Step:', step);
+
   let buttons: any = [];
 
   if (step === Steps.AMOUNT) {
@@ -92,17 +94,17 @@ const handleRequest = frames(async (ctx) => {
       </Button>
     ));
   } else if (step === Steps.DEST_CHAIN) {
-    buttons = Object.values(tokenWhitelist[fromChainId]).map((token) => (
+    buttons = SUPPORTED_CHAINS.map((chainId) => (
       <Button
         action='post'
         target={{
           pathname: '/inputs',
           query: {
-            fromTokenAddress: token.address,
+            toChainId: chainId,
           },
         }}
       >
-        {token.symbol}
+        {CHAINS[chainId]}
       </Button>
     ));
   } else if (step === Steps.DEST_TOKEN) {
@@ -168,7 +170,7 @@ const handleRequest = frames(async (ctx) => {
 
         {step === Steps.DEST_CHAIN && (
           <div tw='flex flex-col items-center'>
-            <span tw='text-[2rem]'>Select Source Chain</span>
+            <span tw='text-[2rem]'>Select Destination Chain</span>
 
             <div tw='mt-4' />
 
