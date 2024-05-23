@@ -17,6 +17,12 @@ export type State = {
     tTA: string;
     tCID: number;
   };
+  l: {
+    tTA?: string;
+    tCID?: string;
+    fTA?: string;
+    fCID?: string;
+  };
   tx: string;
 };
 
@@ -30,6 +36,7 @@ export const initialState: State = {
     tTA: '',
     tCID: 0,
   },
+  l: {},
   tx: '',
 };
 

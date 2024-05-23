@@ -32,12 +32,21 @@ const handleRequest = frames(async (ctx) => {
   if (ctx.searchParams.newQuote === 'true') {
     currentState.skey = '';
     currentState.status = QUOTE_STATUS.NONE;
+
     currentState.p = {
-      tTA: ctx.searchParams.toTokenAddress,
-      tCID: Number(ctx.searchParams.toChainId || 0) as ChainIds,
-      fTA: ctx.searchParams.fromTokenAddress,
-      fCID: Number(ctx.searchParams.fromChainId || 0) as ChainIds,
+      fTA: currentState.l.fTA ? currentState.p.fTA : ctx.searchParams.fromTokenAddress,
+      tTA: currentState.l.tTA ? currentState.p.tTA : ctx.searchParams.toTokenAddress,
+      fCID: currentState.l.fCID ? Number(currentState.p.fCID) : (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+      tCID: currentState.l.tCID ? Number(currentState.p.tCID) : (Number(ctx.searchParams.toChainId || 0) as ChainIds),
       amt: '',
+    };
+
+    // to persist locked values from search params after cancellation
+    currentState.l = {
+      tTA: ctx.searchParams.toTokenAddress ? 't' : '',
+      tCID: (Number(ctx.searchParams.toChainId || 0) as ChainIds) ? 't' : '',
+      fTA: ctx.searchParams.fromTokenAddress ? 't' : '',
+      fCID: (Number(ctx.searchParams.fromChainId || 0) as ChainIds) ? 't' : '',
     };
   } else {
     currentState.p = {
