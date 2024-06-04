@@ -31,7 +31,7 @@ const handleRequest = frames(async (ctx) => {
   const tx = await getTransactionFromExplorer(currentState.tx);
 
   let buttons: any = [];
-  if (tx && (tx.status === 'completed' || tx.status === 'failed')) {
+  if (tx && ((tx.status === 'completed' && !!tx.recipient_address) || tx.status === 'failed')) {
     buttons = [
       <Button
         action='post'
@@ -94,9 +94,9 @@ const handleRequest = frames(async (ctx) => {
                 Submitted on {capitalize(CHAINS[currentState.p.fCID as ChainIds])}
               </span>
 
-              <span>Nitro is looking for your transaction</span>
+              <span tw='text-center'>Nitro is looking for your transaction</span>
             </div>
-          ) : !tx?.dest_tx_hash ? (
+          ) : !tx?.dest_tx_hash || !tx.recipient_address ? (
             <div
               tw='flex w-full flex-col items-center'
               style={{
@@ -137,7 +137,7 @@ const handleRequest = frames(async (ctx) => {
                 {tokenWhitelist[currentState.p.tCID][currentState.p.tTA].symbol}
               </span>
             </div>
-          ) : tx.status === 'completed' ? (
+          ) : tx.status === 'completed' && !!tx.recipient_address ? (
             <div
               tw='flex flex-col items-start'
               style={{
@@ -184,6 +184,8 @@ const handleRequest = frames(async (ctx) => {
               }}
             >
               <span tw='text-[2.5rem] text-red-500'>Zap Failed</span>
+
+              <span>Please check the transaction on the Nitro explorer.</span>
             </div>
           )}
         </div>
