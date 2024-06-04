@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-key */
 
 import { frames } from '@/app/frames/frames';
-import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { ChainIds, CHAINS } from '@/constants/chains';
 import { capitalize, getImageURI, getTokenData } from '@/utils';
 import { formatNumber } from '@/utils/formatNumber';
 import { getTransactionFromExplorer } from '@/utils/getTransactionFromExplorer';

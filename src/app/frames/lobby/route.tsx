@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { ChainIds, CHAINS } from '@/constants/chains';
 import { getBridgeFeeInUSD, getImageURI, getTokenData } from '@/utils';
 import { formatNumber } from '@/utils/formatNumber';
 import { getRequestById, RequestResponse } from '@/utils/pathfinder';

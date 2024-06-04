@@ -1,11 +1,9 @@
 /* eslint-disable react/jsx-key */
 
-import { ChainIds, wagmiConfig } from '@/constants/wagmiConfig';
-import { getRequestById, getTransactionById } from '@/utils/pathfinder';
-import { prepareTransactionRequest, simulateContract, writeContract } from '@wagmi/core';
+import { getTransactionById } from '@/utils/pathfinder';
 import { getFrameMessage, TransactionTargetResponse } from 'frames.js';
 import { NextRequest, NextResponse } from 'next/server';
-import { encodeFunctionData, erc20Abi, zeroAddress } from 'viem';
+import { encodeFunctionData, erc20Abi } from 'viem';
 
 export async function POST(req: NextRequest): Promise<NextResponse<TransactionTargetResponse>> {
   const json = await req.json();

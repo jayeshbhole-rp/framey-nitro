@@ -2,8 +2,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { SUPPORTED_CHAINS, TokenData, tokenWhitelist } from '@/constants';
-import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { TokenData, tokenWhitelist } from '@/constants';
+import { ChainIds, CHAINS } from '@/constants/chains';
+import { SourceChainIds, SUPPORTED_SOURCE_CHAINS } from '@/constants/chains/source';
 import { capitalize, getImageURI, getTokenData } from '@/utils';
 import { Button } from 'frames.js/next';
 
@@ -36,7 +37,9 @@ const handleRequest = frames(async (ctx) => {
     currentState.p = {
       fTA: currentState.l.fTA ? currentState.p.fTA : ctx.searchParams.fromTokenAddress,
       tTA: currentState.l.tTA ? currentState.p.tTA : ctx.searchParams.toTokenAddress,
-      fCID: currentState.l.fCID ? Number(currentState.p.fCID) : (Number(ctx.searchParams.fromChainId || 0) as ChainIds),
+      fCID: currentState.l.fCID
+        ? Number(currentState.p.fCID)
+        : (Number(ctx.searchParams.fromChainId || 0) as SourceChainIds),
       tCID: currentState.l.tCID ? Number(currentState.p.tCID) : (Number(ctx.searchParams.toChainId || 0) as ChainIds),
       amt: '',
     };
@@ -111,7 +114,7 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
     ];
   } else if (step === Steps.SOURCE_CHAIN) {
-    buttons = SUPPORTED_CHAINS.map((chainId) => (
+    buttons = SUPPORTED_SOURCE_CHAINS.map((chainId) => (
       <Button
         action='post'
         target={{
@@ -125,7 +128,7 @@ const handleRequest = frames(async (ctx) => {
       </Button>
     ));
   } else if (step === Steps.DEST_CHAIN) {
-    buttons = SUPPORTED_CHAINS.map((chainId) => (
+    buttons = SUPPORTED_SOURCE_CHAINS.map((chainId) => (
       <Button
         action='post'
         target={{
@@ -182,7 +185,7 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mt-4' />
 
             <div tw='flex flex-col items-start mx-auto'>
-              {SUPPORTED_CHAINS.map((chainId, index) => (
+              {SUPPORTED_SOURCE_CHAINS.map((chainId, index) => (
                 <div
                   tw='flex items-center mt-4'
                   key={chainId}
@@ -212,7 +215,7 @@ const handleRequest = frames(async (ctx) => {
             <div tw='mt-4' />
 
             <div tw='flex flex-col items-start mx-auto'>
-              {SUPPORTED_CHAINS.map((chainId, index) => (
+              {SUPPORTED_SOURCE_CHAINS.map((chainId, index) => (
                 <div
                   tw='flex items-center mt-4'
                   key={chainId}
