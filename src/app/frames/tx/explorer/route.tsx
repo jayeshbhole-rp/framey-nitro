@@ -139,14 +139,18 @@ const handleRequest = frames(async (ctx) => {
             </div>
           ) : tx.status === 'completed' && !!tx.recipient_address ? (
             <div
-              tw='flex flex-col items-start'
+              tw={'flex flex-col items-start'}
               style={{
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='text-[2.5rem] text-yellow-500 text-center'>Zapped Successfully</span>
+              <span tw='text-[2.5rem] text-yellow-500 text-center'>
+                {tx.dest_symbol === tokenWhitelist[currentState.p.tCID][currentState.p.tTA].symbol
+                  ? 'Zap Successful'
+                  : 'Zap Failed'}
+              </span>
 
-              <span tw='text-red-500'>
+              <span tw='text-red-500 mx-auto'>
                 <img
                   tw='w-[2.5rem] h-[2.5rem] mr-4'
                   src={getImageURI(`/images/chains/${CHAINS[Number(tx.src_chain_id) as ChainIds]}.png`)}
@@ -165,7 +169,7 @@ const handleRequest = frames(async (ctx) => {
                 alt=''
               />
 
-              <span tw='text-green-500'>
+              <span tw='text-green-500 mx-auto'>
                 <img
                   tw='w-[2.5rem] h-[2.5rem] mr-4'
                   src={getImageURI(`/images/chains/${CHAINS[Number(tx.dest_chain_id) as ChainIds]}.png`)}
