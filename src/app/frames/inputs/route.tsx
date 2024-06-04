@@ -4,7 +4,7 @@
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
 import { SUPPORTED_CHAINS, TokenData, tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { capitalize, getImageURI } from '@/utils';
+import { capitalize, getImageURI, getTokenData } from '@/utils';
 import { Button } from 'frames.js/next';
 
 export const runtime = 'edge';
@@ -76,8 +76,8 @@ const handleRequest = frames(async (ctx) => {
   } else {
     step = Steps.AMOUNT;
 
-    fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress.toLowerCase()];
-    toTokenData = tokenWhitelist[toChainId][toTokenAddress.toLowerCase()];
+    toTokenData = await getTokenData(toTokenAddress, toChainId);
+    fromTokenData = await getTokenData(fromTokenAddress, fromChainId);
 
     if (!fromTokenData || !toTokenData) {
       console.log('Invalid token configuration');

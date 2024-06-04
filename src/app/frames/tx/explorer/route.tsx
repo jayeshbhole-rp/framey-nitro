@@ -2,13 +2,11 @@
 /* eslint-disable react/jsx-key */
 
 import { frames } from '@/app/frames/frames';
-import { tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { capitalize, getImageURI } from '@/utils';
+import { capitalize, getImageURI, getTokenData } from '@/utils';
 import { formatNumber } from '@/utils/formatNumber';
 import { getTransactionFromExplorer } from '@/utils/getTransactionFromExplorer';
 import { Button } from 'frames.js/next';
-import { formatUnits } from 'viem';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
@@ -63,6 +61,9 @@ const handleRequest = frames(async (ctx) => {
     ];
   }
 
+  const toTokenData = await getTokenData(currentState.p.tTA, currentState.p.tCID);
+  const fromTokenData = await getTokenData(currentState.p.fTA, currentState.p.fCID);
+
   return {
     image: (
       <div tw='flex h-full w-full flex-col bg-[#fff] text-neutral-100 items-center p-8'>
@@ -115,7 +116,7 @@ const handleRequest = frames(async (ctx) => {
                   height={72}
                   alt=''
                 />
-                {formatNumber(currentState.p.amt)} {tokenWhitelist[currentState.p.fCID][currentState.p.fTA].symbol}
+                {formatNumber(currentState.p.amt)} {fromTokenData.symbol}
               </span>
 
               <img
@@ -134,7 +135,7 @@ const handleRequest = frames(async (ctx) => {
                   height={64}
                   alt=''
                 />
-                {tokenWhitelist[currentState.p.tCID][currentState.p.tTA].symbol}
+                {toTokenData.symbol}
               </span>
             </div>
           ) : tx.status === 'completed' && !!tx.recipient_address ? (
@@ -145,9 +146,7 @@ const handleRequest = frames(async (ctx) => {
               }}
             >
               <span tw='text-[2.5rem] text-yellow-500 text-center'>
-                {tx.dest_symbol === tokenWhitelist[currentState.p.tCID][currentState.p.tTA].symbol
-                  ? 'Zap Successful'
-                  : 'Zap Failed'}
+                {tx.dest_symbol === toTokenData.symbol ? 'Zap Successful' : 'Zap Failed'}
               </span>
 
               <span tw='text-red-500 mx-auto'>

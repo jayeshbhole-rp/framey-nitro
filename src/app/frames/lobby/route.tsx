@@ -2,9 +2,8 @@
 /* eslint-disable react/jsx-key */
 
 import { frames, QUOTE_STATUS } from '@/app/frames/frames';
-import { tokenWhitelist } from '@/constants';
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { getBridgeFeeInUSD, getImageURI } from '@/utils';
+import { getBridgeFeeInUSD, getImageURI, getTokenData } from '@/utils';
 import { formatNumber } from '@/utils/formatNumber';
 import { getRequestById, RequestResponse } from '@/utils/pathfinder';
 import { Button } from 'frames.js/next';
@@ -81,8 +80,9 @@ const handleRequest = frames(async (ctx) => {
     fCID: fromChainId,
     amt: amount,
   } = currentState.p;
-  const fromTokenData = tokenWhitelist[fromChainId][fromTokenAddress];
-  const toTokenData = tokenWhitelist[toChainId][toTokenAddress];
+
+  const toTokenData = await getTokenData(toTokenAddress, toChainId);
+  const fromTokenData = await getTokenData(fromTokenAddress, fromChainId);
 
   let buttons: any = [];
   if (readyForTx) {

@@ -1,10 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
 import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
-import { getImageURI } from '@/utils';
+import { getImageURI, getTokenData } from '@/utils';
 import { Button } from 'frames.js/next';
-import { NATIVE, PF_SERVER, tokenWhitelist } from '../../constants';
+import { NATIVE, PF_SERVER } from '../../constants';
 import { frames } from './frames';
+import { CHAINS_DATA } from '@/constants/chains';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
@@ -29,10 +30,38 @@ const handleRequest = frames(async (ctx) => {
   const toTokenAddress = ctx.searchParams.toTokenAddress;
   const toChainId = Number(ctx.searchParams.toChainId) as ChainIds;
 
-  const tokenData = tokenWhitelist[toChainId]?.[toTokenAddress];
+  const tokenData = await getTokenData(toTokenAddress, toChainId);
 
   if (toTokenAddress && toChainId && !tokenData) {
     throw new Error('Token not supported');
+  }
+
+  const buttons: any = [
+    <Button
+      action='post'
+      target={{
+        pathname: '/inputs',
+        query: {
+          toTokenAddress: tokenData ? tokenData.address : '',
+          toChainId: tokenData ? toChainId : '',
+          fromTokenAddress: NATIVE,
+          newQuote: 'true',
+        },
+      }}
+    >
+      Start Zapping
+    </Button>,
+  ];
+
+  if (tokenData) {
+    buttons.push(
+      <Button
+        action='link'
+        target={`${CHAINS_DATA[toChainId].blockExplorers?.default.url}/address/${toTokenAddress}`}
+      >
+        Token Explorer
+      </Button>,
+    );
   }
 
   return {
@@ -108,22 +137,7 @@ const handleRequest = frames(async (ctx) => {
         </div>
       </div>
     ),
-    buttons: [
-      <Button
-        action='post'
-        target={{
-          pathname: '/inputs',
-          query: {
-            toTokenAddress: tokenData ? tokenData.address : '',
-            toChainId: tokenData ? toChainId : '',
-            fromTokenAddress: NATIVE,
-            newQuote: 'true',
-          },
-        }}
-      >
-        Start Zapping
-      </Button>,
-    ],
+    buttons,
     imageOptions: {
       width: 916,
       height: 480,
