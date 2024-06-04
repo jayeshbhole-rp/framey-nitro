@@ -144,7 +144,7 @@ const handleRequest = frames(async (ctx) => {
                 fontFamily: 'Joystix',
               }}
             >
-              <span tw='text-[2.5rem] text-yellow-500'>Zapped</span>
+              <span tw='text-[2.5rem] text-yellow-500 text-center'>Zapped Successfully</span>
 
               <span tw='text-red-500'>
                 <img
