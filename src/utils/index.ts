@@ -1,4 +1,8 @@
+import { TokenData } from '@/constants';
+import { wagmiConfig } from '@/constants/wagmiConfig';
 import { BridgeFee } from '@/types';
+import { getToken } from '@wagmi/core';
+import { cache } from 'react';
 import { formatUnits } from 'viem';
 
 export const capitalize = (word: string) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : '');
@@ -9,6 +13,19 @@ export const areTokensEqual = (tokenA: string, tokenB: string) => tokenA.toLower
 
 export const shortenAddress = (address: string | undefined, chars = 4) =>
   address ? `${address.slice(0, chars + 2)}...${address.slice(-chars)}` : '';
+
+export const getTokenData = cache(async (toTokenAddress: string, toChainId: number) => {
+  const tokenData = await getToken(wagmiConfig, {
+    address: toTokenAddress as `0x${string}`,
+    chainId: Number(toChainId),
+  });
+  return {
+    address: tokenData.address,
+    chainId: toChainId,
+    decimals: tokenData.decimals,
+    symbol: tokenData.symbol,
+  } as TokenData;
+});
 
 export const getBridgeFeeInUSD = async (quoteBridgeFee: BridgeFee) => {
   if (!quoteBridgeFee?.amount) return '0';
