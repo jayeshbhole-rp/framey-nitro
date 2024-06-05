@@ -51,19 +51,19 @@ const handleRequest = frames(async (ctx) => {
   }
 
   let buttons: any = [];
-  if (tx && ((tx.status === 'completed' && !!tx.recipient_address) || tx.status === 'failed')) {
+  if (tx && !isTxPending) {
     buttons = [
-      <Button
-        action='post'
-        target='/'
-      >
-        Zap again
-      </Button>,
       <Button
         action='link'
         target={`https://explorer.routernitro.com/tx/${currentState.tx}`}
       >
         Explorer
+      </Button>,
+      <Button
+        action='post'
+        target='/'
+      >
+        Zap again
       </Button>,
     ];
   } else {
