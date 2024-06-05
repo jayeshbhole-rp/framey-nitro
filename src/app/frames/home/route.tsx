@@ -64,6 +64,15 @@ const handleRequest = frames(async (ctx) => {
     );
   }
 
+  buttons.push(
+    <Button
+      action='link'
+      target='https://app.routernitro.com'
+    >
+      Open Nitro App
+    </Button>,
+  );
+
   return {
     image: (
       <div tw='flex h-full w-full flex-col bg-[#fff] text-neutral-100 items-center p-8'>
