@@ -1,7 +1,9 @@
 export const NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
 export const PF_SERVER =
-  process.env.NODE_ENV === 'production' ? 'https://pathfinder-frames.onrender.com' : 'http://localhost:3200';
+  process.env.NODE_ENV === 'production'
+    ? 'https://api.nitro-frames-server.routerprotocol.com'
+    : 'http://localhost:3200';
 
 export type TokenData = {
   address: string;
