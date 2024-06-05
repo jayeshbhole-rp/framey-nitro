@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-key */
-import { ChainIds, CHAINS } from '@/constants/wagmiConfig';
+import { ChainIds, CHAINS, CHAINS_DATA } from '@/constants/chains';
 import { getImageURI, getTokenData } from '@/utils';
 import { Button } from 'frames.js/next';
 import { NATIVE, PF_SERVER } from '../../constants';
 import { frames } from './frames';
-import { CHAINS_DATA } from '@/constants/chains';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
@@ -30,7 +29,7 @@ const handleRequest = frames(async (ctx) => {
   const toTokenAddress = ctx.searchParams.toTokenAddress;
   const toChainId = Number(ctx.searchParams.toChainId) as ChainIds;
 
-  const tokenData = await getTokenData(toTokenAddress, toChainId);
+  const tokenData = toChainId && toTokenAddress ? await getTokenData(toTokenAddress, toChainId) : undefined;
 
   if (toTokenAddress && toChainId && !tokenData) {
     throw new Error('Token not supported');
