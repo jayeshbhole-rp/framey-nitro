@@ -14,14 +14,22 @@ export const areTokensEqual = (tokenA: string, tokenB: string) => tokenA.toLower
 export const shortenAddress = (address: string | undefined, chars = 4) =>
   address ? `${address.slice(0, chars + 2)}...${address.slice(-chars)}` : '';
 
-export const getTokenData = cache(async (toTokenAddress: string, toChainId: number) => {
+export const getTokenData = cache(async (tokenAddress: string, chainId: number) => {
+  if (isTokenETH(tokenAddress)) {
+    return {
+      address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      chainId: chainId,
+      decimals: 18,
+      symbol: 'ETH',
+    };
+  }
   const tokenData = await getToken(wagmiConfig, {
-    address: toTokenAddress as `0x${string}`,
-    chainId: Number(toChainId),
+    address: tokenAddress as `0x${string}`,
+    chainId: Number(chainId),
   });
   return {
     address: tokenData.address,
-    chainId: toChainId,
+    chainId: chainId,
     decimals: tokenData.decimals,
     symbol: tokenData.symbol,
   } as TokenData;
