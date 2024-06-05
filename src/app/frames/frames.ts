@@ -43,5 +43,5 @@ export const initialState: State = {
 export const frames = createFrames<State>({
   basePath: '/frames',
   initialState,
-  // baseUrl: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+  baseUrl: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
 });
