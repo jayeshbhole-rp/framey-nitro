@@ -8,9 +8,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { isAddress } from 'viem';
 
-const ExampleFrame = dynamic(() => import('./ExampleFrame'), {
-  ssr: false,
-});
+// const ExampleFrame = dynamic(() => import('./ExampleFrame'), {
+//   ssr: false,
+// });
 
 const FrameLink = () => {
   const [toChainId, setToChainId] = useState<ChainIds>(CHAIN_IDS.base);
@@ -118,10 +118,10 @@ const FrameLink = () => {
           Copy Frame Link
         </button>
 
-        <ExampleFrame
+        {/* <ExampleFrame
           toChainId={toChainId}
           toTokenAddress={toTokenAddress}
-        />
+        /> */}
       </div>
     </>
   );
