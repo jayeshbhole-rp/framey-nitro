@@ -28,6 +28,28 @@ const handleRequest = frames(async (ctx) => {
 
   const tx = await getTransactionFromExplorer(currentState.tx);
 
+  const toTokenData = await getTokenData(currentState.p.tTA, currentState.p.tCID);
+  const fromTokenData = await getTokenData(currentState.p.fTA, currentState.p.fCID);
+
+  let isTxPending = true;
+  let isTxSuccessful = false;
+  if (tx) {
+    if (tx.status === 'completed') {
+      if (!!tx.recipient_address && !!tx.dest_amount) {
+        if (tx.dest_symbol === toTokenData.symbol) {
+          isTxPending = false;
+          isTxSuccessful = true;
+        } else {
+          isTxPending = false;
+          isTxSuccessful = false;
+        }
+      }
+    } else if (tx.status === 'failed') {
+      isTxPending = false;
+      isTxSuccessful = false;
+    }
+  }
+
   let buttons: any = [];
   if (tx && ((tx.status === 'completed' && !!tx.recipient_address) || tx.status === 'failed')) {
     buttons = [
@@ -60,9 +82,6 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
     ];
   }
-
-  const toTokenData = await getTokenData(currentState.p.tTA, currentState.p.tCID);
-  const fromTokenData = await getTokenData(currentState.p.fTA, currentState.p.fCID);
 
   return {
     image: (
@@ -97,7 +116,7 @@ const handleRequest = frames(async (ctx) => {
 
               <span tw='text-center'>Nitro is looking for your transaction</span>
             </div>
-          ) : !tx?.dest_tx_hash || !tx.recipient_address ? (
+          ) : isTxPending ? (
             <div
               tw='flex w-full flex-col items-center'
               style={{
@@ -138,7 +157,7 @@ const handleRequest = frames(async (ctx) => {
                 {toTokenData.symbol}
               </span>
             </div>
-          ) : tx.status === 'completed' && !!tx.recipient_address ? (
+          ) : isTxSuccessful ? (
             <div
               tw={'flex flex-col items-start'}
               style={{
@@ -179,7 +198,7 @@ const handleRequest = frames(async (ctx) => {
                 {formatNumber(tx.dest_amount)} {tx?.dest_symbol}
               </span>
             </div>
-          ) : (
+          ) : !isTxSuccessful ? (
             <div
               tw='flex w-full flex-col items-center'
               style={{
@@ -187,6 +206,17 @@ const handleRequest = frames(async (ctx) => {
               }}
             >
               <span tw='text-[2.5rem] text-red-500'>Zap Failed</span>
+
+              <span>Please check the transaction on the Nitro explorer.</span>
+            </div>
+          ) : (
+            <div
+              tw='flex w-full flex-col items-center'
+              style={{
+                fontFamily: 'Joystix',
+              }}
+            >
+              <span tw='text-[2.5rem] text-red-500'>Check Explorer</span>
 
               <span>Please check the transaction on the Nitro explorer.</span>
             </div>
