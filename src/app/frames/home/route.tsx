@@ -3,8 +3,9 @@
 import { ChainIds, CHAINS, CHAINS_DATA } from '@/constants/chains';
 import { getImageURI, getTokenData } from '@/utils';
 import { Button } from 'frames.js/next';
-import { NATIVE, PF_SERVER } from '../../constants';
-import { frames } from './frames';
+import { NATIVE, PF_SERVER } from '@/constants';
+import { frames } from '../frames';
+import Home from '@/components/Home';
 
 export const runtime = 'edge';
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
@@ -152,6 +153,7 @@ const handleRequest = frames(async (ctx) => {
         },
       ],
     },
+    body: <Home />,
   };
 });
 
