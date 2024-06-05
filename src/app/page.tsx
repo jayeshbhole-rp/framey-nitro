@@ -1,8 +1,9 @@
+import Home from '@/components/Home';
 import { fetchMetadata } from 'frames.js/next';
 
 export async function generateMetadata() {
   return {
-    title: 'My Page',
+    title: 'Nitro Frames | Router Protocol',
     // provide a full URL to your /frames endpoint
     other: await fetchMetadata(
       new URL('/frames', process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
@@ -11,10 +12,5 @@ export async function generateMetadata() {
 }
 
 export default function Page() {
-  return (
-    <>
-      <span>Root</span> <br />
-      <span className='font-joystix'>Nitro Bridge Frame</span>
-    </>
-  );
+  return <Home />;
 }
