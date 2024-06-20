@@ -52,6 +52,8 @@ const handleRequest = frames(async (ctx) => {
       },
       key: currentState.skey,
     });
+
+    console.log('quoteRequest', quoteRequest);
   } else {
     quoteRequest = await getRequestById({
       key: currentState.skey,
