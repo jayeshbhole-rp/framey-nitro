@@ -51,7 +51,7 @@ export const getRequestById = async (params: {
     key: params.key,
   });
 
-  const res = await fetch(`${PF_SERVER}/quote`, {
+  const res = await fetch(`${PF_SERVER}/quote-sync`, {
     headers: {
       'Content-Type': 'application/json',
     },
