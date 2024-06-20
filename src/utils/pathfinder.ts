@@ -61,7 +61,7 @@ export const getRequestById = async (params: {
     try {
       return await res.json();
     } catch (e) {
-      console.error(`Error getting transaction. Response: ${res}`);
+      console.error(`Error getting transaction. Response: ${res.body}`);
       throw new Error('Error getting transaction');
     }
   });
@@ -85,7 +85,7 @@ export const getTransactionById = async (params: { key: string; sender: string; 
     try {
       return await res.json();
     } catch (e) {
-      console.error(`Error getting transaction. Response: ${res}`);
+      console.error(`Error getting transaction. Response: ${res.body}`);
       throw new Error('Error getting transaction');
     }
   });
