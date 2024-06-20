@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatUnits, parseUnits } from 'viem';
 
 export const runtime = 'edge';
-export const maxDuration = 5;
+export const maxDuration = 15;
 
 const joystixFont = fetch(new URL('/public/fonts/joystix_monospace.ttf', import.meta.url)).then((res) =>
   res.arrayBuffer(),
