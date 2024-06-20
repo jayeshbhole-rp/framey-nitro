@@ -77,7 +77,12 @@ export const getTransactionById = async (params: { key: string; sender: string; 
     method: 'POST',
     body: body,
   }).then(async (res) => {
-    return await res.json();
+    try {
+      return await res.json();
+    } catch (e) {
+      console.error(`Error getting transaction. Response: ${res}`);
+      throw new Error('Error getting transaction');
+    }
   });
   return res as TransactionResponse;
 };
